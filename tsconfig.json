@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -19,6 +19,7 @@
       }
     ],
     "paths": {
+      "@chakra/*": ["./src/components/ui/*"],
       "@/*": ["./src/*"]
     }
   },

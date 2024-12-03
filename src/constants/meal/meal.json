@@ -1,0 +1,373 @@
+[
+  {
+    "name": "Türkçe Transcript",
+    "id": "transliteration",
+    "slug": "turkce-transcript",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Abdulbaki Gölpınarlı Meali",
+    "id": "golpinarli",
+    "slug": "abdulbaki-golpinarli-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Abdullah-Ahmet Akgül Meali",
+    "id": "aakgul",
+    "slug": "abdullah-ahmet-akgul-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Abdullah Parlıyan Meali",
+    "id": "aparliyan",
+    "slug": "abdullah-parliyan-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Ahmet Tekin Meali",
+    "id": "ahmettekin",
+    "slug": "ahmet-tekin-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Ahmet Varol Meali",
+    "id": "ahmetvarol",
+    "slug": "ahmet-varol-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Ali Bulaç Meali",
+    "id": "abulac",
+    "slug": "ali-bulac-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Ali Fikri Yavuz Meali",
+    "id": "alifikriyavuz",
+    "slug": "ali-fikri-yavuz-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Bahaeddin Sağlam Meali",
+    "id": "bahaeddinsaglam",
+    "slug": "bahaeddin-saglam-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Bayraktar Bayraklı Meali",
+    "id": "bayraktar",
+    "slug": "bayraktar-bayrakli-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Besim Atalay Meali (1965)",
+    "id": "besimatalay",
+    "slug": "besim-atalay-meali-(1965)",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Cemal Külünkoğlu Meali",
+    "id": "cemalkulunkoglu",
+    "slug": "cemal-kulunkoglu-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Cemil Said (1924)",
+    "id": "cemilsaid",
+    "slug": "cemil-said-(1924)",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Diyanet İşleri Meali (Eski)",
+    "id": "diyanetislerieski",
+    "slug": "diyanet-isleri-meali-(eski)",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Diyanet İşleri Meali (Yeni)",
+    "id": "diyanetisleriyeni",
+    "slug": "diyanet-isleri-meali-(yeni)",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Kur'an Yolu (Diyanet İşleri)",
+    "id": "kuranyolu",
+    "slug": "kur'an-yolu-(diyanet-isleri)",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Diyanet Vakfı Meali",
+    "id": "diyanetvakfi",
+    "slug": "diyanet-vakfi-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Edip Yüksel Meali",
+    "id": "edip",
+    "slug": "edip-yuksel-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Elmalılı Hamdi Yazır Meali",
+    "id": "elmalilisade",
+    "slug": "elmalili-hamdi-yazir-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Elmalılı Meali (Orijinal)",
+    "id": "elmaliliorj",
+    "slug": "elmalili-meali-(orijinal)",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Emrah Demiryent Meali",
+    "id": "demiryent",
+    "slug": "emrah-demiryent-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Erhan Aktaş Meali",
+    "id": "erhanaktas",
+    "slug": "erhan-aktas-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Hasan Basri Çantay Meali",
+    "id": "hbasricantay",
+    "slug": "hasan-basri-cantay-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Hayrat Neşriyat Meali",
+    "id": "hayrat",
+    "slug": "hayrat-nesriyat-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "İlyas Yorulmaz Meali",
+    "id": "ilyasyorulmaz",
+    "slug": "ilyas-yorulmaz-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "İsmayıl Hakkı Baltacıoğlu",
+    "id": "baltacioglu",
+    "slug": "ismayil-hakki-baltacioglu",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "İsmail Hakkı İzmirli",
+    "id": "ismailhakkiizmirli",
+    "slug": "ismail-hakki-izmirli",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "İsmail Yakıt",
+    "id": "ismailyakit",
+    "slug": "ismail-yakit",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Kadri Çelik Meali",
+    "id": "kadricelik",
+    "slug": "kadri-celik-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Mahmut Kısa Meali",
+    "id": "mahmutkisa",
+    "slug": "mahmut-kisa-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Mahmut Özdemir Meali",
+    "id": "mahmutozdemir",
+    "slug": "mahmut-ozdemir-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Mehmet Çakır Meali",
+    "id": "mehmetcakir",
+    "slug": "mehmet-cakir-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Mehmet Çoban Meali",
+    "id": "mehmetcoban",
+    "slug": "mehmet-coban-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Mehmet Okuyan Meali",
+    "id": "mehmetokuyan",
+    "slug": "mehmet-okuyan-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Mehmet Türk Meali",
+    "id": "mehmetturk",
+    "slug": "mehmet-turk-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Muhammed Esed Meali",
+    "id": "muhammedesed",
+    "slug": "muhammed-esed-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Mustafa Çavdar Meali",
+    "id": "mustafacavdar",
+    "slug": "mustafa-cavdar-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Mustafa İslamoğlu Meali",
+    "id": "islamoglu",
+    "slug": "mustafa-islamoglu-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Orhan Kuntman Meali",
+    "id": "orhankuntman",
+    "slug": "orhan-kuntman-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Osman Fırat Meali",
+    "id": "osmanfirat",
+    "slug": "osman-firat-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Ömer Nasuhi Bilmen Meali",
+    "id": "omernasuhi",
+    "slug": "omer-nasuhi-bilmen-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Suat Yıldırım Meali",
+    "id": "syildirim",
+    "slug": "suat-yildirim-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Süleyman Ateş Meali",
+    "id": "sates",
+    "slug": "suleyman-ates-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Süleyman Tevfik (1927)",
+    "id": "suleymantevfik",
+    "slug": "suleyman-tevfik-(1927)",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Süleymaniye Vakfı Meali",
+    "id": "abayindir",
+    "slug": "suleymaniye-vakfi-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Şaban Piriş Meali",
+    "id": "spiris",
+    "slug": "saban-piris-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Ümit Şimşek Meali",
+    "id": "simsek",
+    "slug": "umit-simsek-meali",
+    "created": "2024-06-19T06:33:20.033Z",
+    "updated": "2024-06-19T06:33:20.033Z"
+  },
+  {
+    "name": "Yaşar Nuri Öztürk Meali",
+    "id": "ynuri",
+    "slug": "yasar-nuri-ozturk-meali",
+    "created": "2024-06-19T06:33:20.034Z",
+    "updated": "2024-06-19T06:33:20.034Z"
+  },
+  {
+    "name": "Eski Anadolu Türkçesi",
+    "id": "eskianadoluturkcesi",
+    "slug": "eski-anadolu-turkcesi",
+    "created": "2024-06-19T06:33:20.034Z",
+    "updated": "2024-06-19T06:33:20.034Z"
+  },
+  {
+    "name": "Satır Altı Meal (1534)",
+    "id": "satiralti",
+    "slug": "satir-alti-meal-(1534)",
+    "created": "2024-06-19T06:33:20.034Z",
+    "updated": "2024-06-19T06:33:20.034Z"
+  },
+  {
+    "name": "Bunyadov-Memmedeliyev",
+    "id": "bunyadov",
+    "slug": "bunyadov-memmedeliyev",
+    "created": "2024-06-19T06:33:20.034Z",
+    "updated": "2024-06-19T06:33:20.034Z"
+  },
+  {
+    "name": "M. Pickthall (English)",
+    "id": "pickthall",
+    "slug": "m.-pickthall-(english)",
+    "created": "2024-06-19T06:33:20.034Z",
+    "updated": "2024-06-19T06:33:20.034Z"
+  },
+  {
+    "name": "Yusuf Ali (English)",
+    "id": "yusufali",
+    "slug": "yusuf-ali-(english)",
+    "created": "2024-06-19T06:33:20.034Z",
+    "updated": "2024-06-19T06:33:20.034Z"
+  }
+]
