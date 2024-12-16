@@ -20,7 +20,12 @@
     ],
     "paths": {
       "@chakra/*": ["./src/components/ui/*"],
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "#/*": [
+        "./public/*"
+      ]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

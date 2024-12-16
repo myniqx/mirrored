@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import React, {
   PropsWithChildren,
   ReactNode,
@@ -32,7 +32,7 @@ type ProviderProps = PropsWithChildren<{
 
 export const LayoutProvider: React.FC<ProviderProps> = ({
   children,
-  toggleDarkTheme = () => { },
+  toggleDarkTheme = () => {},
 }) => {
   const [visibleHeader, setVisibleHeader] = useState(true)
   const [headerContent, setHeaderContent_] = useState<ReactNode>(
@@ -62,26 +62,25 @@ export const LayoutProvider: React.FC<ProviderProps> = ({
         setSearchID,
       }}
     >
-      <Flex
-        flexDir={'column'}
-        flex={1}
-        position={'relative'}
-      >
-        <Show when={visibleHeader} fallback={
-          <IconButton
-            variant="outline"
-
-            onClick={() => setVisibleHeader(true)}
-            position={'absolute'}
-            right={10}
-            top={10}
-            zIndex={44}
-          >
-            <MdVisibility />
-          </IconButton>}>
+      <Flex flexDir={'column'} flex={1} position={'relative'}>
+        <Show
+          when={visibleHeader}
+          fallback={
+            <IconButton
+              variant="outline"
+              onClick={() => setVisibleHeader(true)}
+              position={'absolute'}
+              right={10}
+              top={10}
+              zIndex={44}
+            >
+              <MdVisibility />
+            </IconButton>
+          }
+        >
           <Navbar webName={''} pageTitle={''} />
 
-          <Show when={searchVisible}  >
+          <Show when={searchVisible}>
             <Input
               // label="Search"
               value={searchText ?? ''}
