@@ -1,64 +1,58 @@
-import { LineWord } from './types'
 import {
-  ReactNode,
   createContext,
-  useCallback,
-  useContext,
   useEffect,
+  useMemo,
   useRef,
-  useState,
+  useState
 } from 'react'
+import { LineWord } from './types'
 
-import { For, HStack, Stack, Text } from '@chakra-ui/react'
 import { getArabicNumberWithShape } from '@/utils/arabicNumber'
+import { Box, For, HStack } from '@chakra-ui/react'
 import { VerseEnd } from './VerseEnd'
 import { WordView } from './WordView'
+import { findFontSize } from '../../../utils/measureWitdh'
 
 type ArabicLineProps = {
   words?: LineWord[]
+  width: number
 }
 
 const LineContext = createContext<{
   fontSize: number
 }>({ fontSize: 36 })
 
-export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [] }) => {
-  const ref = useRef<HTMLDivElement>(null)
-  const [fontSize, setFontSize] = useState(36)
+export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width }) => {
 
-  useEffect(() => {
-    if (!ref?.current) return
+  const fontSize = useMemo(() => {
+    if (!words?.length || !width) return 36
 
-    const observer = new ResizeObserver(([entry]) => {
-      const { width } = entry.contentRect
-      const sentence = words
-        .map((w) => {
-          if (w.isEnd) return getArabicNumberWithShape(w.ayah)
-          return w.word
-        })
-        .join(' ')
+    const sentence = words
+      .map((w) => {
+        if (w.isEnd) return getArabicNumberWithShape(w.ayah)
+        return w.word
+      })
+      .join(' ')
 
-      const bestSize = findFontSize(sentence, 'font-arabic', width)
+    return findFontSize(sentence, 'arabic', width)
+  }, [words, width])
 
-      setFontSize(bestSize)
-    })
-
-    observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [ref])
 
   return (
     <LineContext.Provider value={{ fontSize }}>
       <HStack
-        ref={ref}
-        w={'100%'}
+        w={width}
         flexDir={'row-reverse'}
         gap={fontSize / 2}
         py={18}
         justifyContent={'space-between'}
         alignItems={'center'}
         borderWidth={2}
+        pos={'relative'}
       >
+        <Box pos={'absolute'} left={0} top={0} zIndex={5}>
+          fontSize {fontSize}, width {width}
+        </Box>
         <For each={words}>
           {(word, i) => {
             if (word.isEnd)

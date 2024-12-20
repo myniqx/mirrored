@@ -14,7 +14,7 @@ function measureTextWidth(text: string, font: string): number {
 }
 
 const deltaLimit = 30
-const findFontSize = (text: string, font: string, maxWidth: number): number => {
+export const findFontSize = (text: string, font: string, maxWidth: number): number => {
   let fontSize = 24
   let width = measureTextWidth(text, `${fontSize}px ${font}`)
   let step = 1

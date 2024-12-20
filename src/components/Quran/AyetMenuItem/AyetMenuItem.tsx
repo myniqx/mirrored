@@ -21,8 +21,12 @@ export const AyetMenuItem: React.FC<AyetMenuItemProps> = ({
   matchedString,
 }) => {
   return (
-    <Link href={`/arabic?page=${page}`}>
-      <Card.Root size="sm" _hover={{ bg: 'gray.900', borderColor: 'gray.600' }}>
+    <Link href={`/arabic?page=${page}`} w={'100%'}>
+      <Card.Root
+        size="sm"
+        w={'100%'}
+        _hover={{ bg: 'gray.900', borderColor: 'gray.600' }}
+      >
         <Card.Body flexDir={'row'} gap={4} alignItems={'center'}>
           <Image
             src={isMakkah ? './mekki.jpg' : './medeni.jpg'}

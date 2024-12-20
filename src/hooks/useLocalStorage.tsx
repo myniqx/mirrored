@@ -1,13 +1,19 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+"use client"
+import { useState, useEffect, Dispatch, SetStateAction } from "react"
 
-export const useLocalStorage = <T extends unknown = string>(
+export const useLocalStorage = <T = string>(
   key: string,
-  initialValue: T,
+  initialValue: T
 ): [T, Dispatch<SetStateAction<T>>] => {
-  const [value, setValue] = useState<T>(() => {
+  const [value, setValue] = useState<T>(initialValue)
+
+  useEffect(() => {
+    // Tarayıcı ortamında kontrol
     const storedValue = localStorage.getItem(key)
-    return storedValue !== null ? JSON.parse(storedValue) : initialValue
-  })
+    if (storedValue !== null) {
+      setValue(JSON.parse(storedValue))
+    }
+  }, [key])
 
   useEffect(() => {
     localStorage.setItem(key, JSON.stringify(value))

@@ -18,14 +18,14 @@ export const SurahHeader: React.FC<SurahHeaderProps> = (props) => {
       alignItems="center"
       justifyContent="space-around"
     >
-      <Text fontSize={bracketSize} fontFamily="font-arabic">
+      <Text fontSize={bracketSize} fontFamily="arabic">
         ﷌
       </Text>
       <Text fontSize={24}>{surah.name}</Text>
       <Text fontSize={24}>{surah.totalAyahs} verses</Text>
       <Text
         fontSize={bracketSize}
-        fontFamily="font-arabic"
+        fontFamily="arabic"
         transform={'scaleX(-1)'}
       >
         ﷌

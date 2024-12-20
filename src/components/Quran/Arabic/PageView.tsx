@@ -4,6 +4,7 @@ import { WordView } from './WordView'
 import { useQuranContext } from '@/providers/QuranProvider'
 import { VStack } from '@chakra-ui/react'
 import pageContent from '../../../constants/quran/pageContents.json'
+import { useLayoutContext } from '@/providers/LayoutProvider'
 
 type PageViewProps = {
   page: number
@@ -12,9 +13,10 @@ type PageViewProps = {
 export const PageView: FC<PageViewProps> = ({ page }) => {
   const content = pageContent[page]
   const { getArabic } = useQuranContext()
+  const { measures } = useLayoutContext()
 
   return (
-    <VStack gap={4} alignItems="flex-end" maxWidth={780} padding={18}>
+    <VStack gap={4} alignItems="flex-end" maxWidth={measures.width} padding={18}>
       {content.flatMap(([surah, ayah]) => {
         const verses = getArabic(surah, ayah)
         const verseViews = verses.map((v, i) => (

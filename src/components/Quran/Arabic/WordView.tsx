@@ -63,7 +63,7 @@ export const WordView: React.FC<WordViewProps> = ({
           zIndex={100}
           color={'yellow.200'}
           textShadow={'0 0 5px red'}
-          overflow={'hidden'}
+          overflow={'visible'}
           lineClamp={1}
           textWrap={'nowrap'}
           onClick={() => setVisible(false)}

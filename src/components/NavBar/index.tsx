@@ -8,9 +8,13 @@ import {
   HStack,
   IconButton,
   Image,
+  Input,
+  Show,
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
+import { ColorModeButton } from '@chakra/color-mode'
+import { useEffect, useRef, useState } from 'react'
 import { FaMoon } from 'react-icons/fa6'
 import { IoMdEyeOff } from 'react-icons/io'
 import {
@@ -27,17 +31,42 @@ interface NavbarProps {
   icon2?: React.ReactElement
 }
 
+
 const Navbar: React.FC<NavbarProps> = () => {
-  const { setVisibleHeader, headerContent, toggleDarkTheme, toggleSearch } =
-    useLayoutContext()
+  const { setVisibleHeader,
+    headerContent,
+    toggleDarkTheme,
+    toggleSearch,
+    searchText,
+    setMeasures
+  } = useLayoutContext()
+  const ref = useRef<HTMLDivElement>(null)
   const { getParams, changeParams } = useChangeParams()
   const page = getParams('page', 0)
   const prevPage = Math.max(page - 1, 0)
   const nextPage = Math.min(page + 1, 604)
+  const [showSearch, setShowSearch] = useState(false)
+
+  useEffect(() => {
+    if (!ref?.current) return
+
+    const observer = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect
+      setMeasures({
+        width,
+        height
+      })
+    })
+
+    observer.observe(ref.current)
+
+    return () => observer.disconnect()
+  }, [ref, setMeasures])
 
   return (
     <HStack
-      //   bg={useColorModeValue('gray.100', 'gray.900')}
+      //   bg={useColorModeValue('gray.100', 'gray.900')}'
+      ref={ref}
       py={4}
       px={6}
       position={'absolute'}
@@ -45,7 +74,8 @@ const Navbar: React.FC<NavbarProps> = () => {
       right={0}
       top={0}
       h={14}
-      bg="gray.700"
+      bg="gray.100"
+      _dark={{ bg: 'gray.800' }}
       boxShadow="md"
     >
       <Flex align="center" flexGrow={0} flexShrink={1}>
@@ -53,7 +83,7 @@ const Navbar: React.FC<NavbarProps> = () => {
         <IconButton variant="ghost">
           <MdArrowBack />
         </IconButton>
-        <Text>{headerContent}</Text>
+        <Box display={{ base: 'none', md: 'block' }}>{headerContent}</Box>
       </Flex>
 
       <Box flexGrow={1} flex={1} alignItems="center" textAlign={'center'}>
@@ -77,17 +107,21 @@ const Navbar: React.FC<NavbarProps> = () => {
       </Box>
 
       <HStack justify="space-between" align="center">
-        <IconButton variant="ghost" onClick={toggleSearch}>
+        <Show when={showSearch}>
+          <Input
+            value={searchText ?? ''}
+            placeholder="type some names"
+            style={{
+              margin: 6,
+            }}
+          />
+        </Show>
+        <IconButton variant="ghost" onClick={() => setShowSearch(!showSearch)}>
           <MdSearch />
         </IconButton>
-        <IconButton variant="ghost" onClick={toggleDarkTheme}>
-          <FaMoon />
-        </IconButton>
+        <ColorModeButton />
         <IconButton variant="ghost" onClick={() => setVisibleHeader(false)}>
           <IoMdEyeOff />
-        </IconButton>
-        <IconButton variant="ghost">
-          <MdMobileFriendly />
         </IconButton>
       </HStack>
     </HStack>

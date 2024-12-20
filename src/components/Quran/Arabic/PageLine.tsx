@@ -54,6 +54,7 @@ export const PageLine: React.FC<PageLineProps> = ({
       ...prev,
       fontSize: prev.totalWidth / (prev.tempWidth / prev.fontSize),
     }))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [measures.totalWidth])
 
   useEffect(() => {
@@ -65,6 +66,7 @@ export const PageLine: React.FC<PageLineProps> = ({
     } else {
       setHasMeasured(true)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [measures.tempWidth, hasMeasured])
 
   useEffect(() => {

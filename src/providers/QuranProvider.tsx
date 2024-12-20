@@ -1,17 +1,21 @@
 import React, {
   PropsWithChildren,
-  createContext,
-  useEffect,
-  useState,
+  createContext
 } from 'react'
 //import arabic from '../constants/quran/arabic.json'
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { AyahDetailsInArray } from '@/types/AyahDetails'
+//import { BookmarkData } from '../Bookmarks/BookmarkedItem'
 import { arabic } from '../constants/quran/arapca'
-import turkish from '../constants/quran/turkishMeal.json'
 import endings from '../constants/quran/pageEndings.json'
 import surah_details from '../constants/quran/surahDetails.json'
-import { BookmarkData } from '../Bookmarks/BookmarkedItem'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { AyahDetails, AyahDetailsInArray } from '@/types/AyahDetails'
+import turkish from '../constants/quran/turkishMeal.json'
+
+type BookmarkData = {
+  id: number
+  page: number
+  last_seen: string
+}
 
 interface QuranContextProps {
   hasLineEnding: (sure: number, ayet: number, wordIndex: number) => boolean

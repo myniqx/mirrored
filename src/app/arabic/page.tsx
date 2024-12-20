@@ -4,7 +4,7 @@ import { useChangeParams } from '@/hooks/useChangeParam'
 import { QuranProvider } from '@/providers/QuranProvider'
 
 const ArabicPage = () => {
-  const { getParams, changeParams } = useChangeParams()
+  const { getParams } = useChangeParams()
   const pageNumber = getParams('page', 0)
 
   return (

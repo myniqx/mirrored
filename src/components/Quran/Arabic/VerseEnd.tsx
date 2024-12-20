@@ -1,6 +1,6 @@
+import { getArabicNumberWithShape } from '@/utils/arabicNumber'
 import { Stack, Text } from '@chakra-ui/react'
 import { usePageLine } from './PageLine'
-import { getArabicNumber, getArabicNumberWithShape } from '@/utils/arabicNumber'
 
 type VerseEndProps = {
   surah: number

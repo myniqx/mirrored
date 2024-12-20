@@ -14,12 +14,14 @@ import { MdVisibility } from 'react-icons/md'
 interface LayoutProviderProps {
   visibleHeader: boolean
   headerContent: ReactNode
+  measures: MeasureProps
   setVisibleHeader: (value: boolean) => void
   setHeaderContent: (value: ReactNode | null) => void
   toggleDarkTheme: () => void
   toggleSearch: () => void
   searchText?: string
   setSearchID: (value: string) => void
+  setMeasures: (value: MeasureProps) => void
 }
 
 export const LayoutContext = createContext<LayoutProviderProps>(
@@ -30,14 +32,21 @@ type ProviderProps = PropsWithChildren<{
   toggleDarkTheme?: () => void
 }>
 
+type MeasureProps = {
+  width: number
+  height: number
+}
+
+
 export const LayoutProvider: React.FC<ProviderProps> = ({
   children,
-  toggleDarkTheme = () => {},
+  toggleDarkTheme = () => { },
 }) => {
   const [visibleHeader, setVisibleHeader] = useState(true)
   const [headerContent, setHeaderContent_] = useState<ReactNode>(
     <Text>{common.appName}</Text>,
   )
+  const [measures, setMeasures] = useState<MeasureProps>({ width: 0, height: 0 })
   const [searchVisible, setSearchVisible] = useState(false)
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({})
   const [searchID, setSearchID] = useState('')
@@ -54,6 +63,8 @@ export const LayoutProvider: React.FC<ProviderProps> = ({
       value={{
         headerContent,
         visibleHeader,
+        measures,
+        setMeasures,
         setHeaderContent,
         setVisibleHeader,
         toggleDarkTheme,
@@ -79,22 +90,8 @@ export const LayoutProvider: React.FC<ProviderProps> = ({
           }
         >
           <Navbar webName={''} pageTitle={''} />
-
-          <Show when={searchVisible}>
-            <Input
-              // label="Search"
-              value={searchText ?? ''}
-              //   left={<Icon source="magnify" size={24} color={'black'} />}
-              //  mode="outlined"
-
-              placeholder="type some names"
-              style={{
-                margin: 6,
-              }}
-            />
-          </Show>
         </Show>
-        <Flex flex={1} flexGrow={1}>
+        <Flex flex={1} flexGrow={1} mt={visibleHeader ? 14 : 0}>
           {children}
         </Flex>
       </Flex>
