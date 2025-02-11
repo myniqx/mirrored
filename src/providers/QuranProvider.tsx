@@ -1,11 +1,6 @@
-import React, {
-  PropsWithChildren,
-  createContext
-} from 'react'
-//import arabic from '../constants/quran/arabic.json'
+import React, { PropsWithChildren, createContext, useState } from 'react'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
 import { AyahDetailsInArray } from '@/types/AyahDetails'
-//import { BookmarkData } from '../Bookmarks/BookmarkedItem'
 import { arabic } from '../constants/quran/arapca'
 import endings from '../constants/quran/pageEndings.json'
 import surah_details from '../constants/quran/surahDetails.json'
@@ -22,6 +17,11 @@ interface QuranContextProps {
   getArabic: (sure: number, ayet: number) => string[]
   getTurkish: (sure: number, ayet: number) => string[]
   setBookmark: (page: number, id?: number) => void
+  setHover: (surah: number, ayah: number, value: boolean) => void
+  toggleSelected: (surah: number, ayah: number) => void
+  isSelected: (surah: number, ayah: number) => object
+  isHovered: (surah: number, ayah: number) => object
+  getStyles: (surah: number, ayah: number) => object
   bookmarks: BookmarkData[]
 }
 
@@ -36,10 +36,15 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
     'bookmarks',
     [],
   )
+  const [hoveredAyah, setHoveredAyah] = useState<[number, number] | null>(null)
+  const [selectedAyahs, setSelectedAyahs] = useState<Record<string, boolean>>(
+    {},
+  )
+
   const hasLineEnding = (sure: number, ayet: number, wordIndex: number) => {
-    return endings[`${sure - 1}` as keyof typeof endings]?.[ayet]?.includes(
-      wordIndex,
-    )
+    const surah = endings[sure - 1]
+    const list = surah?.[ayet.toString() as keyof typeof surah]
+    return list?.includes(wordIndex) ?? false
   }
 
   const getArabic = (sure: number, ayet: number) => {
@@ -71,14 +76,60 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
     }
   }
 
+  const setHover = (surah: number, ayah: number, value: boolean) => {
+    setHoveredAyah(value ? [surah, ayah] : null)
+  }
+
+  const toggleSelected = (surah: number, ayah: number) => {
+    setSelectedAyahs((prev) => ({
+      ...prev,
+      [`${surah}-${ayah}`]: !prev[`${surah}-${ayah}`],
+    }))
+  }
+
+  const isSelected = (surah: number, ayah: number) => {
+    return selectedAyahs[`${surah}-${ayah}`]
+      ? {
+        fontWeight: 'bold',
+        bg: 'green.100',
+        _dark: {
+          bg: 'green.700',
+        },
+      }
+      : {}
+  }
+
+  const isHovered = (surah: number, ayah: number) => {
+    return hoveredAyah?.[0] === surah && hoveredAyah?.[1] === ayah
+      ? {
+        bg: 'gray.100',
+        _dark: {
+          bg: 'gray.700',
+        },
+      }
+      : {}
+  }
+
+  const getStyles = (sure: number, ayet: number) => {
+    return {
+      ...isHovered(sure, ayet),
+      ...isSelected(sure, ayet),
+    }
+  }
+
   return (
     <QuranContext.Provider
       value={{
         hasLineEnding,
         getArabic,
         getTurkish,
+        getStyles,
         setBookmark,
         bookmarks,
+        toggleSelected,
+        setHover,
+        isSelected,
+        isHovered,
       }}
     >
       {children}

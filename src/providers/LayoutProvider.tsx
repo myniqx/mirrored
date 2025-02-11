@@ -37,16 +37,18 @@ type MeasureProps = {
   height: number
 }
 
-
 export const LayoutProvider: React.FC<ProviderProps> = ({
   children,
-  toggleDarkTheme = () => { },
+  toggleDarkTheme = () => {},
 }) => {
   const [visibleHeader, setVisibleHeader] = useState(true)
   const [headerContent, setHeaderContent_] = useState<ReactNode>(
     <Text>{common.appName}</Text>,
   )
-  const [measures, setMeasures] = useState<MeasureProps>({ width: 0, height: 0 })
+  const [measures, setMeasures] = useState<MeasureProps>({
+    width: 0,
+    height: 0,
+  })
   const [searchVisible, setSearchVisible] = useState(false)
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({})
   const [searchID, setSearchID] = useState('')

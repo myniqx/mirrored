@@ -9,10 +9,10 @@ import {
   Text,
 } from '@chakra-ui/react'
 import ayahDetails from '@/constants/quran/surahDetails.json'
-import { AyetMenuItem, AyetMenuItemProps } from '../Quran/AyetMenuItem'
+import { AyetMenuItem, AyetMenuItemProps } from './AyetMenuItem'
 import { AyahDetailsInArray } from '@/types/AyahDetails'
 import { nuzulOrder } from '@/constants/quran/nuzulOrder'
-import { CuzMenuItem } from '../Quran/CuzMenuItem'
+import { CuzMenuItem } from './CuzMenuItem'
 import { MasonryGrid } from '@chakra/masonry'
 import { useChangeParams } from '@/hooks/useChangeParam'
 import { findMatch, rebuildQuery } from '@/utils/FindMatch'

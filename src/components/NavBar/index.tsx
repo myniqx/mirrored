@@ -3,25 +3,27 @@ import { useLayoutContext } from '@/providers/LayoutProvider'
 import {
   Box,
   Flex,
-  Grid,
-  GridItem,
   HStack,
   IconButton,
   Image,
   Input,
+  Menu,
+  MenuContent,
+  MenuItem,
+  MenuRoot,
+  MenuTrigger,
+  Portal,
   Show,
-  SimpleGrid,
   Text,
 } from '@chakra-ui/react'
 import { ColorModeButton } from '@chakra/color-mode'
 import { useEffect, useRef, useState } from 'react'
-import { FaMoon } from 'react-icons/fa6'
 import { IoMdEyeOff } from 'react-icons/io'
 import {
   IoChevronBackCircleOutline,
   IoChevronForwardCircleOutline,
 } from 'react-icons/io5'
-import { MdArrowBack, MdMobileFriendly, MdSearch } from 'react-icons/md'
+import { MdArrowBack, MdMenu, MdSearch } from 'react-icons/md'
 
 interface NavbarProps {
   webName: string
@@ -31,42 +33,16 @@ interface NavbarProps {
   icon2?: React.ReactElement
 }
 
-
 const Navbar: React.FC<NavbarProps> = () => {
-  const { setVisibleHeader,
-    headerContent,
-    toggleDarkTheme,
-    toggleSearch,
-    searchText,
-    setMeasures
-  } = useLayoutContext()
-  const ref = useRef<HTMLDivElement>(null)
+  const { setVisibleHeader, headerContent, searchText } = useLayoutContext()
   const { getParams, changeParams } = useChangeParams()
-  const page = getParams('page', 0)
+  const page = +getParams<number>('page', 0)
   const prevPage = Math.max(page - 1, 0)
   const nextPage = Math.min(page + 1, 604)
   const [showSearch, setShowSearch] = useState(false)
 
-  useEffect(() => {
-    if (!ref?.current) return
-
-    const observer = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect
-      setMeasures({
-        width,
-        height
-      })
-    })
-
-    observer.observe(ref.current)
-
-    return () => observer.disconnect()
-  }, [ref, setMeasures])
-
   return (
     <HStack
-      //   bg={useColorModeValue('gray.100', 'gray.900')}'
-      ref={ref}
       py={4}
       px={6}
       position={'absolute'}
@@ -123,6 +99,22 @@ const Navbar: React.FC<NavbarProps> = () => {
         <IconButton variant="ghost" onClick={() => setVisibleHeader(false)}>
           <IoMdEyeOff />
         </IconButton>
+        <MenuRoot
+          positioning={{ placement: 'left-start' }}
+        >
+          <MenuTrigger asChild>
+            <IconButton variant="ghost">
+              <MdMenu />
+            </IconButton>
+          </MenuTrigger>
+          <MenuContent>
+            <MenuItem value='settings'>Settings</MenuItem>
+            <MenuItem value='settings1'>Settings</MenuItem>
+            <MenuItem value='settings2'>Settings</MenuItem>
+            <MenuItem value='settings3'>Settings</MenuItem>
+            <MenuItem value='settings4'>Settings</MenuItem>
+          </MenuContent>
+        </MenuRoot>
       </HStack>
     </HStack>
   )

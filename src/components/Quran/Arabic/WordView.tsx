@@ -1,7 +1,8 @@
-import { Show, VStack, Text, Heading } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
-import { usePageLine } from './PageLine'
 import { useQuranContext } from '@/providers/QuranProvider'
+import { Show, Text, VStack } from '@chakra-ui/react'
+import React, { useEffect } from 'react'
+import { usePageLine } from './ArabicLine'
+import useMeasureElement from '@/hooks/useMeasureElement'
 
 export type WordViewProps = {
   surah: number
@@ -17,27 +18,14 @@ export const WordView: React.FC<WordViewProps> = ({
   word,
 }) => {
   const [visible, setVisible] = React.useState(false)
-  const { getTurkish } = useQuranContext()
+  const { getTurkish, setHover, isHovered } = useQuranContext()
   const { fontSize } = usePageLine()
-  const ref = React.useRef<HTMLParagraphElement>(null)
-
+  const [ref, { width }] = useMeasureElement<HTMLParagraphElement>()
   const turks = getTurkish(surah, ayah)[wordIndex]
-  const [width, setWidth] = React.useState(0)
-
-  useEffect(() => {
-    if (!ref?.current) return
-    const observer = new ResizeObserver(([entry]) => {
-      const { width } = entry.contentRect
-      setWidth((prev) => width ?? prev)
-    })
-
-    observer.observe(ref.current)
-
-    return () => observer.disconnect()
-  }, [ref])
+  const hover = isHovered(surah, ayah)
 
   return (
-    <VStack alignItems={'center'} position={'relative'}>
+    <VStack alignItems={'center'} position={'relative'} {...hover}>
       <Text
         ref={ref}
         fontFamily={'arabic'}
@@ -46,6 +34,8 @@ export const WordView: React.FC<WordViewProps> = ({
         cursor={'pointer'}
         textAlign={'center'}
         onClick={() => setVisible(!visible)}
+        onMouseEnter={() => setHover(surah, ayah, true)}
+        onMouseLeave={() => setHover(surah, ayah, false)}
       >
         {word}
       </Text>

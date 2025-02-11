@@ -1,9 +1,9 @@
-"use client"
-import { useState, useEffect, Dispatch, SetStateAction } from "react"
+'use client'
+import { useState, useEffect, Dispatch, SetStateAction } from 'react'
 
-export const useLocalStorage = <T = string>(
+export const useLocalStorage = <T = string,>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, Dispatch<SetStateAction<T>>] => {
   const [value, setValue] = useState<T>(initialValue)
 

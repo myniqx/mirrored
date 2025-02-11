@@ -112,6 +112,7 @@ export const useChangeParams = () => {
         sanitizedParams.set(key, value as string)
       }
 
+      /*
       const shouldRemovePage =
         Object.keys(sanitizedArgs).some((key) => key !== 'page') &&
         sanitizedParams.has('page') &&
@@ -120,6 +121,7 @@ export const useChangeParams = () => {
       if (shouldRemovePage) {
         sanitizedParams.delete('page')
       }
+      */
 
       if (
         isEqual(
