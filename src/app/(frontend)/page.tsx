@@ -7,12 +7,12 @@ import {
   InputElement,
   Stack,
 } from '@chakra-ui/react'
-import common from '../constants/common.json'
+import common from '../../constants/common.json'
 import { InputGroup } from '@chakra/input-group'
 import { Field } from '@chakra/field'
-import { MainMenu } from '@/components/MainPage/MainMenu'
+import { MainMenu } from '@/app/(frontend)/(components)/MainPage/MainMenu'
 import { useChangeParams } from '@/hooks/useChangeParam'
-import { MainSearchBox } from '@/components/MainPage/MainSearchBox'
+import { MainSearchBox } from '@/app/(frontend)/(components)/MainPage/MainSearchBox'
 
 const Home = () => {
   return (
