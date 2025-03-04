@@ -1,7 +1,10 @@
-import { Show, VStack, Text, Heading } from '@chakra-ui/react'
-import React, { useEffect } from 'react'
-import { usePageLine } from './PageLine'
-import { useQuranContext } from '@/providers/QuranProvider'
+"use client"
+
+import { useQuranContext } from "@/providers/QuranProvider"
+import type React from "react"
+import { useEffect, useState } from "react"
+import { usePageLine } from "./ArabicLine"
+import useMeasureElement from "@/hooks/useMeasureElement"
 
 export type WordViewProps = {
   surah: number
@@ -10,67 +13,40 @@ export type WordViewProps = {
   word: string
 }
 
-export const WordView: React.FC<WordViewProps> = ({
-  surah,
-  ayah,
-  wordIndex,
-  word,
-}) => {
-  const [visible, setVisible] = React.useState(false)
+export const WordView: React.FC<WordViewProps> = ({ surah, ayah, wordIndex, word }) => {
+  const [visible, setVisible] = useState(false)
   const { getTurkish } = useQuranContext()
-  const { fontSize } = usePageLine()
-  const ref = React.useRef<HTMLParagraphElement>(null)
-
+  const { fontSize, setWordWidth } = usePageLine()
+  const [ref, { width }] = useMeasureElement<HTMLParagraphElement>()
   const turks = getTurkish(surah, ayah)[wordIndex]
-  const [width, setWidth] = React.useState(0)
 
   useEffect(() => {
-    if (!ref?.current) return
-    const observer = new ResizeObserver(([entry]) => {
-      const { width } = entry.contentRect
-      setWidth((prev) => width ?? prev)
-    })
-
-    observer.observe(ref.current)
-
-    return () => observer.disconnect()
-  }, [ref])
+    setWordWidth(surah, ayah, wordIndex, width)
+  }, [width])
 
   return (
-    <VStack alignItems={'center'} position={'relative'}>
-      <Text
+    <div className={`flex flex-col items-center relative`}>
+      <p
         ref={ref}
-        fontFamily={'arabic'}
-        fontSize={fontSize}
-        userSelect={'none'}
-        cursor={'pointer'}
-        textAlign={'center'}
+        className="quran-text select-none cursor-pointer text-center"
+        style={{ fontSize: `${fontSize}px` }}
         onClick={() => setVisible(!visible)}
+        //    onMouseEnter={() => setHover(surah, ayah, true)}
+        //    onMouseLeave={() => setHover(surah, ayah, false)}
       >
         {word}
-      </Text>
+      </p>
 
-      <Show when={visible && turks}>
-        <Text
-          position={'absolute'}
-          bottom={-5}
-          fontFamily={'arabic'}
-          fontSize={fontSize / 2}
-          userSelect={'none'}
-          cursor={'pointer'}
-          textAlign={'center'}
-          maxWidth={width}
-          zIndex={100}
-          color={'yellow.200'}
-          textShadow={'0 0 5px red'}
-          overflow={'hidden'}
-          lineClamp={1}
-          textWrap={'nowrap'}
+      {visible && turks && (
+        <p
+          className="absolute bottom-[-20px] font-arabic select-none cursor-pointer text-center text-yellow-200 text-shadow-red z-100 overflow-visible line-clamp-1 whitespace-nowrap"
+          style={{ fontSize: fontSize / 2, maxWidth: width, textShadow: "0 0 5px red" }}
           onClick={() => setVisible(false)}
         >
           {turks}
-        </Text>
-      </Show>
-    </VStack>
+        </p>
+      )}
+    </div>
   )
 }
+

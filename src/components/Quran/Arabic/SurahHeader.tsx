@@ -1,6 +1,7 @@
-import { Text } from '@chakra-ui/react'
-import { getSurahDetails } from '@/providers/QuranProvider'
-import { HStack } from '@chakra-ui/react'
+import type React from "react"
+import { getSurahDetails } from "@/providers/QuranProvider"
+import Image from "next/image"
+import { HeaderAspectRatio } from "./types"
 
 type SurahHeaderProps = {
   surah: number
@@ -8,28 +9,28 @@ type SurahHeaderProps = {
 
 export const SurahHeader: React.FC<SurahHeaderProps> = (props) => {
   const surah = getSurahDetails(props.surah)
-  const bracketSize = 64
   return (
-    <HStack
-      width="100%"
-      aspectRatio={604 / 112}
-      borderWidth={1}
-      borderColor={'gray.600'}
-      alignItems="center"
-      justifyContent="space-around"
+    <div
+      className="w-full border border-gray-600 flex items-center justify-around relative shadow-lg"
+      style={{ aspectRatio: HeaderAspectRatio }}
     >
-      <Text fontSize={bracketSize} fontFamily="font-arabic">
-        ﷌
-      </Text>
-      <Text fontSize={24}>{surah.name}</Text>
-      <Text fontSize={24}>{surah.totalAyahs} verses</Text>
-      <Text
-        fontSize={bracketSize}
-        fontFamily="font-arabic"
-        transform={'scaleX(-1)'}
-      >
-        ﷌
-      </Text>
-    </HStack>
+      <img
+        src="/ornament-left.png"
+        width={'12%'}
+        height={100}
+        className="absolute left-0 top-0 bottom-0 h-full dark:invert"
+        alt="Mirrored Logo"
+      />
+      <img
+        src="/ornament-right.png"
+        width={'12%'}
+        height={100}
+        className="absolute right-0 top-0 bottom-0 h-full dark:invert"
+        alt="Mirrored Logo"
+      />
+      <h2 className="text-2xl">{surah.name}</h2>
+      <h2 className="text-2xl">{surah.totalAyahs} verses</h2>
+    </div>
   )
 }
+

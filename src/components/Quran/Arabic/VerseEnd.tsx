@@ -1,6 +1,9 @@
-import { Stack, Text } from '@chakra-ui/react'
-import { usePageLine } from './PageLine'
-import { getArabicNumber, getArabicNumberWithShape } from '@/utils/arabicNumber'
+import type React from "react"
+import { getArabicNumberWithShape } from "@/utils/arabicNumber"
+import { usePageLine } from "./ArabicLine"
+import { useQuranContext } from "@/providers/QuranProvider"
+import useMeasureElement from "@/hooks/useMeasureElement"
+import { useEffect } from "react"
 
 type VerseEndProps = {
   surah: number
@@ -8,29 +11,28 @@ type VerseEndProps = {
 }
 
 export const VerseEnd: React.FC<VerseEndProps> = ({ surah, ayah }) => {
-  const { fontSize } = usePageLine()
+  const { fontSize, setWordWidth } = usePageLine()
+  const { getStyles, toggleSelected, setHover } = useQuranContext()
+  const [ref, { width }] = useMeasureElement<HTMLDivElement>()
+
+  useEffect(() => {
+    setWordWidth(surah, ayah, -1, width)
+  }, [width])
 
   return (
-    <Stack position={'relative'}>
-      <Text
-        fontFamily={'font-arabic'}
-        fontSize={fontSize}
-        userSelect={'none'}
-        cursor={'pointer'}
-        lineClamp={1}
+    <div
+      className={`relative flex flex-col flex-shrink-0 ${getStyles(surah, ayah)} `}
+      onClick={() => toggleSelected(surah, ayah)}
+    >
+      <p
+        ref={ref}
+        className="quran-text text-yellow-400 select-none cursor-pointer line-clamp-1"
+        style={{ fontSize: fontSize * (3 / 4) }}
       >
         {getArabicNumberWithShape(ayah)}
-      </Text>
-      <Text
-        lineClamp={1}
-        position={'absolute'}
-        bottom={-5}
-        left={'40%'}
-        textAlign={'center'}
-        color={'red'}
-      >
-        {ayah}
-      </Text>
-    </Stack>
+      </p>
+      <p className="line-clamp-1 absolute bottom-[-20px] left-[40%] text-center text-red-500">{ayah}</p>
+    </div>
   )
 }
+

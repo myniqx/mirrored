@@ -1,23 +1,19 @@
-import { useChangeParams } from '@/hooks/useChangeParam'
-import { useLayoutContext } from '@/providers/LayoutProvider'
-import {
-  Box,
-  Flex,
-  Grid,
-  GridItem,
-  HStack,
-  IconButton,
-  Image,
-  SimpleGrid,
-  Text,
-} from '@chakra-ui/react'
-import { FaMoon } from 'react-icons/fa6'
-import { IoMdEyeOff } from 'react-icons/io'
-import {
-  IoChevronBackCircleOutline,
-  IoChevronForwardCircleOutline,
-} from 'react-icons/io5'
-import { MdArrowBack, MdMobileFriendly, MdSearch } from 'react-icons/md'
+"use client"
+
+import type React from "react"
+
+import { useChangeParams } from "@/hooks/useChangeParam"
+import { useLayoutContext } from "@/providers/LayoutProvider"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ModeToggle } from "@/components/ui/mode-toggle"
+import Image from "next/image"
+import { useState } from "react"
+import { IoMdEyeOff } from "react-icons/io"
+import { IoChevronBackCircleOutline, IoChevronForwardCircleOutline } from "react-icons/io5"
+import { MdArrowBack, MdSearch, MdMenu } from "react-icons/md"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { NavbarMenu } from "./NavbarMenu"
 
 interface NavbarProps {
   webName: string
@@ -28,70 +24,62 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = () => {
-  const { setVisibleHeader, headerContent, toggleDarkTheme, toggleSearch } =
-    useLayoutContext()
+  const { setVisibleHeader, headerContent, searchText } = useLayoutContext()
   const { getParams, changeParams } = useChangeParams()
-  const page = getParams('page', 0)
+  const page = +getParams<number>("page", 0)
   const prevPage = Math.max(page - 1, 0)
   const nextPage = Math.min(page + 1, 604)
+  const [showSearch, setShowSearch] = useState(false)
 
   return (
-    <HStack
-      //   bg={useColorModeValue('gray.100', 'gray.900')}
-      py={4}
-      px={6}
-      position={'absolute'}
-      left={0}
-      right={0}
-      top={0}
-      h={14}
-      bg="gray.700"
-      boxShadow="md"
-    >
-      <Flex align="center" flexGrow={0} flexShrink={1}>
-        <Image w={8} h={8} alt="Mirrored Logo" src={'/icon.png'} />
-        <IconButton variant="ghost">
+    <div className="flex items-center justify-between py-4 px-6 absolute left-0 right-0 top-0 h-14 bg-gray-100 dark:bg-gray-800 shadow-md">
+      {/* Left section: Logo, back button, and header content */}
+      <div className="flex items-center flex-grow-0 flex-shrink-1">
+        <Image width={32} height={32} alt="Mirrored Logo" src="/icon.png" />
+        <Button variant="ghost" size="icon">
           <MdArrowBack />
-        </IconButton>
-        <Text>{headerContent}</Text>
-      </Flex>
+        </Button>
+        <div className="hidden md:block">{headerContent}</div>
+      </div>
 
-      <Box flexGrow={1} flex={1} alignItems="center" textAlign={'center'}>
-        <HStack gap={4} justifyContent={'center'}>
-          <IconButton
+      {/* Center section: Page navigation */}
+      <div className="flex-grow flex-1 flex items-center justify-center text-center">
+        <div className="flex items-center gap-4 justify-center">
+          <Button
             variant="ghost"
+            size="icon"
             disabled={prevPage === page}
             onClick={() => changeParams({ page: prevPage })}
           >
             <IoChevronBackCircleOutline />
-          </IconButton>
-          <Text>{page}</Text>
-          <IconButton
+          </Button>
+          <span>{page}</span>
+          <Button
             variant="ghost"
+            size="icon"
             disabled={nextPage === page}
             onClick={() => changeParams({ page: nextPage })}
           >
             <IoChevronForwardCircleOutline />
-          </IconButton>
-        </HStack>
-      </Box>
+          </Button>
+        </div>
+      </div>
 
-      <HStack justify="space-between" align="center">
-        <IconButton variant="ghost" onClick={toggleSearch}>
+      {/* Right section: Search, theme toggle, and menu */}
+      <div className="flex items-center gap-2">
+        {showSearch && <Input value={searchText ?? ""} placeholder="Type some names" className="mx-1.5" />}
+        <Button variant="ghost" size="icon" onClick={() => setShowSearch(!showSearch)}>
           <MdSearch />
-        </IconButton>
-        <IconButton variant="ghost" onClick={toggleDarkTheme}>
-          <FaMoon />
-        </IconButton>
-        <IconButton variant="ghost" onClick={() => setVisibleHeader(false)}>
+        </Button>
+        <ModeToggle />
+        <Button variant="ghost" size="icon" onClick={() => setVisibleHeader(false)}>
           <IoMdEyeOff />
-        </IconButton>
-        <IconButton variant="ghost">
-          <MdMobileFriendly />
-        </IconButton>
-      </HStack>
-    </HStack>
+        </Button>
+        <NavbarMenu />
+      </div>
+    </div>
   )
 }
 
 export default Navbar
+
