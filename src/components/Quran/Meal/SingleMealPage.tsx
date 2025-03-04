@@ -1,51 +1,22 @@
-import { FC, useEffect, useMemo, useState } from 'react'
-import { SinglePageViewProps } from '../Arabic/types'
-import {
-  createListCollection,
-  For,
-  Text,
-  SelectRoot,
-  Stack,
-  VStack,
-  HStack,
-  Spacer,
-  Card,
-  Heading,
-  Show,
-  Box,
-  Badge,
-} from '@chakra-ui/react'
-import { useQuranContext } from '@/providers/QuranProvider'
-import { useLayoutContext } from '@/providers/LayoutProvider'
+"use client"
+import { type FC, useEffect, useState } from "react"
+import type { SinglePageViewProps } from "../Arabic/types"
+import { getSurahDetails, useQuranContext } from "@/providers/QuranProvider"
+import { useChangeParams } from "@/hooks/useChangeParam"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-import pageContent from '../../../constants/quran/pageContents.json'
-import meals from '../../../constants/meal/meal.json'
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValueText,
-} from '@chakra/select'
-import { useChangeParams } from '@/hooks/useChangeParam'
-import { MealAyahContent, QuranData, Verse } from './types'
+import pageContent from "../../../constants/quran/pageContents.json"
+import meals from "../../../constants/meal/meal.json"
+import type { QuranData, Verse } from "./types"
 
 export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
   const content = pageContent[page]
-  const { isHovered, setHover, isSelected, toggleSelected } = useQuranContext()
-  const { getParams, changeParams } = useChangeParams()
-  const mealSlug = getParams('meal')
-  const selectedMeal = mealSlug
-    ? meals.find((m) => m.slug === mealSlug)
-    : undefined
+  const { setHover, getStyles, toggleSelected, mealSlug, setMealSlug } = useQuranContext()
+  const selectedMeal = mealSlug ? meals.find((m) => m.slug === mealSlug) : undefined
 
-  const mealCollection = createListCollection({
-    items: meals.map((meal) => ({ label: meal.name, value: meal.slug })),
-  })
-
-  const [mealAyah, setMealAyah] = useState<
-    (Verse & { surah: number; ayah: number })[]
-  >([])
+  const [mealAyah, setMealAyah] = useState<(Verse & { surah: number; ayah: number })[]>([])
 
   useEffect(() => {
     if (!selectedMeal) return
@@ -61,71 +32,63 @@ export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
 
       setMealAyah(verseList)
     })
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, selectedMeal])
+  }, [selectedMeal]) //Corrected dependencies
 
   return (
-    <VStack gap={4} borderWidth={1} w={'100%'} px={4} pb={12}>
-      <HStack w={'100%'} gap={4} justifyContent={'space-between'} p={2}>
-        <Text>Seçili Meal: {selectedMeal?.name}</Text>
-        <Spacer w={'50%'} />
-        <SelectRoot
-          size={'sm'}
-          collection={mealCollection}
-          w={320}
-          value={mealSlug ? [mealSlug] : undefined}
-          onValueChange={({ value }) => changeParams({ meal: value[0] })}
-          variant={'subtle'}
-        >
-          <SelectLabel>Meali Değiştir:</SelectLabel>
-          <SelectTrigger clearable>
-            <SelectValueText placeholder="Bir meal seçin" />
+    <div className="flex flex-col gap-4 border w-full px-4 pb-12">
+      <div className="flex w-full gap-4 justify-between items-center p-2">
+        <p>Seçili Meal: {selectedMeal?.name}</p>
+        <div className="w-1/2"></div>
+        <Select value={mealSlug} onValueChange={(value) => setMealSlug(value)}>
+          <SelectTrigger className="w-[320px]">
+            <SelectValue placeholder="Bir meal seçin" />
           </SelectTrigger>
           <SelectContent>
-            <For each={mealCollection.items}>
-              {(meal) =>
-                meal && (
-                  <SelectItem item={meal} key={meal.value}>
-                    {meal.label}
-                  </SelectItem>
+            {meals.map((meal) => (
+              <SelectItem key={meal.slug} value={meal.slug}>
+                {meal.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex flex-col">
+        {mealAyah.map((verse, index) => {
+
+          return (
+            <Card
+              key={index}
+              className={`mb-2 ${getStyles(verse.surah, verse.ayah)}`}
+              onMouseEnter={() => setHover(verse.surah, verse.ayah, true)}
+              onMouseLeave={() => setHover(verse.surah, verse.ayah, false)}
+              onClick={() => toggleSelected(verse.surah, verse.ayah)}
+            >
+              <CardHeader className="flex flex-row justify-between items-start p-4">
+                {verse.ayah === 0 ? (
+                  <h2 className="text-sm font-bold" >
+                    {getSurahDetails(verse.surah).name}
+                  </h2>
+                ) : (
+                  <>
+                    <h3 className="text-sm font-medium" dangerouslySetInnerHTML={{ __html: verse?.text ?? "" }} />
+                    <Badge>{verse.ayah}</Badge>
+                  </>
+                )}
+              </CardHeader>
+              {
+                verse?.subtext && (
+                  <CardContent className="text-muted-foreground pt-0">
+                    <div className="w-full" dangerouslySetInnerHTML={{ __html: verse?.subtext ?? "" }} />
+                  </CardContent>
                 )
               }
-            </For>
-          </SelectContent>
-        </SelectRoot>
-      </HStack>
-
-      <Stack>
-        <For each={mealAyah}>
-          {(verse, index) => {
-            return (
-              <Card.Root
-                size="sm"
-                key={index}
-                onMouseEnter={() => setHover(verse.surah, verse.ayah, true)}
-                onMouseLeave={() => setHover(verse.surah, verse.ayah, false)}
-                onClick={() => toggleSelected(verse.surah, verse.ayah)}
-                {...isHovered(verse.surah, verse.ayah)}
-                {...isSelected(verse.surah, verse.ayah)}
-              >
-                <Card.Header justifyContent={'space-between'} flexDir={'row'} alignItems={'top'}>
-                  <Heading size="sm">{verse?.text ?? 'Verse'}</Heading>
-                  <Badge>{verse.ayah}</Badge>
-                </Card.Header>
-                <Show when={verse?.subtext} fallback={<Box h={2} />}>
-                  <Card.Body color="fg.muted">
-                    <Box as='p'
-                      w={'100%'}
-                      dangerouslySetInnerHTML={{ __html: verse?.subtext ?? '' }}
-                    />
-                  </Card.Body>
-                </Show>
-              </Card.Root>
-            )
-          }}
-        </For>
-      </Stack>
-    </VStack>
+            </Card>
+          )
+        })}
+      </div>
+    </div >
   )
 }
+

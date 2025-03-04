@@ -1,32 +1,31 @@
-'use client'
-import React, {
-  PropsWithChildren,
-  ReactNode,
-  createContext,
-  useState,
-} from 'react'
+"use client"
+import React, { type PropsWithChildren, type ReactNode, createContext, useState } from "react"
 
-import { Flex, IconButton, Input, Show, Text } from '@chakra-ui/react'
-import common from '../constants/common.json'
-import Navbar from '@/components/NavBar'
-import { MdVisibility } from 'react-icons/md'
+import { Button } from "@/components/ui/button"
+import common from "../constants/common.json"
+import Navbar from "@/components/NavBar"
+import { MdVisibility } from "react-icons/md"
+import { useLocalStorage } from "@/hooks/useLocalStorage"
 
 interface LayoutProviderProps {
   visibleHeader: boolean
   headerContent: ReactNode
   measures: MeasureProps
+  showMeal: boolean
+  twoPageView: boolean
   setVisibleHeader: (value: boolean) => void
   setHeaderContent: (value: ReactNode | null) => void
   toggleDarkTheme: () => void
   toggleSearch: () => void
+  setShowMeal: (value: boolean) => void
+  setTwoPageView: (value: boolean) => void
   searchText?: string
   setSearchID: (value: string) => void
   setMeasures: (value: MeasureProps) => void
+  debug: false | string
 }
 
-export const LayoutContext = createContext<LayoutProviderProps>(
-  {} as LayoutProviderProps,
-)
+export const LayoutContext = createContext<LayoutProviderProps>({} as LayoutProviderProps)
 
 type ProviderProps = PropsWithChildren<{
   toggleDarkTheme?: () => void
@@ -37,28 +36,23 @@ type MeasureProps = {
   height: number
 }
 
-export const LayoutProvider: React.FC<ProviderProps> = ({
-  children,
-  toggleDarkTheme = () => {},
-}) => {
+export const LayoutProvider: React.FC<ProviderProps> = ({ children, toggleDarkTheme = () => { } }) => {
   const [visibleHeader, setVisibleHeader] = useState(true)
-  const [headerContent, setHeaderContent_] = useState<ReactNode>(
-    <Text>{common.appName}</Text>,
-  )
+  const [headerContent, setHeaderContent_] = useState<ReactNode>(<p>{common.appName}</p>)
   const [measures, setMeasures] = useState<MeasureProps>({
     width: 0,
     height: 0,
   })
   const [searchVisible, setSearchVisible] = useState(false)
   const [searchTexts, setSearchTexts] = useState<{ [key: string]: string }>({})
-  const [searchID, setSearchID] = useState('')
-  const searchText = searchVisible ? (searchTexts[searchID] ?? '') : undefined
+  const [searchID, setSearchID] = useState("")
+  const [showMeal, setShowMeal] = useLocalStorage("showMeal", false)
+  const [twoPageView, setTwoPageView] = useLocalStorage("twoPageView", false)
+  const searchText = searchVisible ? (searchTexts[searchID] ?? "") : undefined
 
   const setHeaderContent = (value: ReactNode | null) => {
-    setHeaderContent_(value ?? <Text>{common.appName}</Text>)
+    setHeaderContent_(value ?? <p>{common.appName}</p>)
   }
-
-  // const theme = useTheme()
 
   return (
     <LayoutContext.Provider
@@ -66,39 +60,33 @@ export const LayoutProvider: React.FC<ProviderProps> = ({
         headerContent,
         visibleHeader,
         measures,
+        showMeal,
+        twoPageView,
         setMeasures,
         setHeaderContent,
         setVisibleHeader,
         toggleDarkTheme,
         toggleSearch: () => setSearchVisible(!searchVisible),
+        setShowMeal,
+        setTwoPageView,
         searchText,
         setSearchID,
+        debug: false // "p-1 bg-gray-800 text-white dark:bg-white/80 dark:text-black rounded-lg", 
       }}
     >
-      <Flex flexDir={'column'} flex={1} position={'relative'}>
-        <Show
-          when={visibleHeader}
-          fallback={
-            <IconButton
-              variant="outline"
-              onClick={() => setVisibleHeader(true)}
-              position={'absolute'}
-              right={10}
-              top={10}
-              zIndex={44}
-            >
-              <MdVisibility />
-            </IconButton>
-          }
-        >
-          <Navbar webName={''} pageTitle={''} />
-        </Show>
-        <Flex flex={1} flexGrow={1} mt={visibleHeader ? 14 : 0}>
-          {children}
-        </Flex>
-      </Flex>
+      <div className="flex flex-col flex-1 relative">
+        {visibleHeader ? (
+          <Navbar webName={""} pageTitle={""} />
+        ) : (
+          <Button variant="outline" onClick={() => setVisibleHeader(true)} className="absolute right-10 top-10 z-50">
+            <MdVisibility />
+          </Button>
+        )}
+        <div className="flex flex-1 flex-grow mt-14">{children}</div>
+      </div>
     </LayoutContext.Provider>
   )
 }
 
 export const useLayoutContext = () => React.useContext(LayoutContext)
+

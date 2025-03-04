@@ -1,22 +1,25 @@
-'use client'
-import { SinglePageView } from '@/components/Quran/Arabic/SingleArabicPage'
-import { SingleMealPage } from '@/components/Quran/Meal/SingleMealPage'
-import { useChangeParams } from '@/hooks/useChangeParam'
-import { QuranProvider } from '@/providers/QuranProvider'
-import { SimpleGrid } from '@chakra-ui/react'
+"use client"
+import { SinglePageView } from "@/components/Quran/Arabic/SingleArabicPage"
+import { SingleMealPage } from "@/components/Quran/Meal/SingleMealPage"
+import { useChangeParams } from "@/hooks/useChangeParam"
+import { QuranProvider } from "@/providers/QuranProvider"
+import { useLayoutContext } from "@/providers/LayoutProvider"
 
 const ArabicPage = () => {
   const { getParams } = useChangeParams()
-  const pageNumber = getParams('page', 0)
+  const { showMeal, twoPageView } = useLayoutContext()
+  const pageNumber = getParams("page", 0)
 
   return (
     <QuranProvider>
-      <SimpleGrid columns={2} gap={4} w={'100%'}>
+      <div className={`grid ${(twoPageView || showMeal) ? "grid-cols-2" : "grid-cols-1"} gap-4 w-screen mt-12 p-4`}>
         <SinglePageView page={pageNumber} />
-        <SingleMealPage page={pageNumber} />
-      </SimpleGrid>
+        {showMeal && <SingleMealPage page={pageNumber} />}
+        {twoPageView && <SinglePageView page={pageNumber + 1} />}
+      </div>
     </QuranProvider>
   )
 }
 
 export default ArabicPage
+

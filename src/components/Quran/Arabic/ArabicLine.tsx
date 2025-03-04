@@ -1,9 +1,15 @@
-import { createContext, useContext } from 'react'
-import { ArabicLineAspectRatio, LineWord } from './types'
+"use client"
 
-import { Box, For, HStack, Show, Text } from '@chakra-ui/react'
-import { VerseEnd } from './VerseEnd'
-import { WordView } from './WordView'
+import React, { useEffect } from "react"
+
+import { createContext, useContext, useMemo } from "react"
+import { ArabicLineAspectRatio, type LineWord } from "./types"
+import { VerseEnd } from "./VerseEnd"
+import { WordView } from "./WordView"
+import { PartialAyahView, PartialAyahViewProps } from "./PartialAyahView"
+import { useLayoutContext } from "@/providers/LayoutProvider"
+import { Skeleton } from "@/components/ui/skeleton"
+import { cn } from "@/lib/utils"
 
 type ArabicLineProps = {
   words?: LineWord[]
@@ -11,64 +17,100 @@ type ArabicLineProps = {
   fontSize: number
 }
 
-const DEBUG = false
 const LineContext = createContext<{
   fontSize: number
-  debug: boolean
-}>({ fontSize: 36, debug: DEBUG })
+  setWordWidth: (surah: number, ayah: number, wordIndex: number, width: number) => void
+}>({ fontSize: 36, setWordWidth: () => { } })
 
-export const ArabicLine: React.FC<ArabicLineProps> = ({
-  words = [],
-  width,
-  fontSize,
-}) => {
+export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width, fontSize, }) => {
+  const { debug } = useLayoutContext()
+  const [widths, setWidths] = React.useState<Record<string, number>>({})
 
-  /*
-  const groups = words.reduce((acc, word) => {
-    const last = acc[acc.length - 1]
-    if (last && last.surah === word.surah && last.ayah === word.ayah)
-      last.words.push(word)
-    else acc.push({ surah: word.surah, ayah: word.ayah, words: [word] })
-    return acc
-  }, [] as { surah: number; ayah: number; words: LineWord[] }[])
-  */
+  const space = useMemo(() => {
+    const values = Object.values(widths)
+    if (values.some(v => !v)) return 0
+
+    const total = values.reduce((a, b) => a + b, 0)
+    return (width - total) / (values.length - 1)
+
+  }, [widths])
+
+  const groupedWords = useMemo(() => {
+    const groups: PartialAyahViewProps[] = []
+    let currentGroup: PartialAyahViewProps = {
+      words: [],
+      surah: 0,
+      ayah: 0
+    }
+
+    words.forEach((word, i) => {
+      if (word.surah !== currentGroup.surah || word.ayah !== currentGroup.ayah) {
+        if (currentGroup.words.length > 0) {
+          groups.push(currentGroup)
+        }
+        currentGroup = {
+          words: i !== 0 ? [space / 2] : [],
+          surah: word.surah,
+          ayah: word.ayah
+        }
+      }
+
+      if (word.isEnd) {
+        currentGroup.words.push(word)
+        if (i < words.length - 1) {
+          currentGroup.words.push(space / 2)
+        }
+      }
+      else {
+        currentGroup.words.push(word)
+        if (i < words.length - 1) {
+          currentGroup.words.push(space)
+        }
+      }
+    })
+
+    if (currentGroup.words.length > 0) {
+      groups.push(currentGroup)
+    }
+
+    return groups
+  }, [width, fontSize, space, words])
+
+  const setWordWidth = (surah: number, ayah: number, wordIndex: number, width: number) => {
+    const key = `${surah}.${ayah}.${wordIndex}`
+    const oldWidth = widths[key]
+    if (oldWidth !== width) {
+      setWidths(prev => ({ ...prev, [key]: width }))
+    }
+  }
 
   return (
-    <LineContext.Provider value={{ fontSize, debug: DEBUG }}>
-      <HStack
-        w={width}
-        aspectRatio={ArabicLineAspectRatio}
-        flexDir={'row-reverse'}
-        py={4}
-        px={2}
-        justifyContent={'space-between'}
-        alignItems={'center'}
-        borderWidth={DEBUG ? 2 : 0}
-        pos={'relative'}
+    <LineContext.Provider value={{ fontSize, setWordWidth }}>
+      <div
+        className="flex flex-row-reverse py-4 px-2 justify-between items-center relative"
+        style={{ width, aspectRatio: ArabicLineAspectRatio }}
       >
-        <Show when={DEBUG}>
-          <Box pos={'absolute'} left={0} top={0} zIndex={5}>
-            <Text>
-              fontSize {fontSize}, width {width}
-            </Text>
-          </Box>
-        </Show>
-        <For each={words}>
-          {(word, i) => {
-            if (word.isEnd)
-              return <VerseEnd key={i} surah={word.surah} ayah={word.ayah} />
-            else
-              return (
-                <WordView
-                  key={`${word.surah}.${word.ayah}.${word.wordIndex}`}
-                  {...word}
-                />
-              )
-          }}
-        </For>
-      </HStack>
+        {debug && (
+          <div className={cn("absolute top-0 left-0 w-full ", debug)}>
+            <p>
+              fontSize {fontSize}, width {width}, space {space}
+            </p>
+          </div>
+        )}
+        {
+          groupedWords.map((group, i) => (
+            <PartialAyahView key={i} {...group} />
+          ))
+        }
+        {space && (
+          <Skeleton
+            className="w-full absolute left-0 top-0"
+            style={{ aspectRatio: ArabicLineAspectRatio }}
+          />)}
+      </div>
     </LineContext.Provider>
   )
 }
 
 export const usePageLine = () => useContext(LineContext)
+

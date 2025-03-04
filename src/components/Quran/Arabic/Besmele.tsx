@@ -1,24 +1,19 @@
-import { For, HStack, Text } from '@chakra-ui/react'
-import { ArabicLineAspectRatio } from './types'
+import { ArabicLineAspectRatio } from "./types"
 
 export const Besmele = ({ fontSize }: { fontSize: number }) => {
-  const words = [
-    'بِسْمِ',
-    'اللَّهِ',
-    'الرَّحْمَنِ',
-    'الرَّحِيمِ',
-  ];
-
+  const words = ["بِسْمِ", "اللَّهِ", "الرَّحْمَنِ", "الرَّحِيمِ"]
 
   return (
-    <HStack justifyContent={'space-between'} w={'100%'} px={'20%'} flexDir={'row-reverse'} aspectRatio={ArabicLineAspectRatio}>
-      <For each={words}>
-        {(word, index) => (
-          <Text key={index} fontFamily={'arabic'} fontSize={fontSize} fontWeight={'bold'}>
-            {word}
-          </Text>
-        )}
-      </For>
-    </HStack>
+    <div
+      className="flex justify-between w-full px-[20%] flex-row-reverse"
+      style={{ aspectRatio: ArabicLineAspectRatio }}
+    >
+      {words.map((word, index) => (
+        <p key={index} className="font-arabic font-bold" style={{ fontSize }}>
+          {word}
+        </p>
+      ))}
+    </div>
   )
 }
+

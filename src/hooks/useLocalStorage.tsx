@@ -1,10 +1,7 @@
-'use client'
-import { useState, useEffect, Dispatch, SetStateAction } from 'react'
+"use client"
+import { useState, useEffect, type Dispatch, type SetStateAction } from "react"
 
-export const useLocalStorage = <T = string,>(
-  key: string,
-  initialValue: T,
-): [T, Dispatch<SetStateAction<T>>] => {
+export const useLocalStorage = <T = string>(key: string, initialValue: T): [T, Dispatch<SetStateAction<T>>] => {
   const [value, setValue] = useState<T>(initialValue)
 
   useEffect(() => {
@@ -21,3 +18,4 @@ export const useLocalStorage = <T = string,>(
 
   return [value, setValue]
 }
+

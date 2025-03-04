@@ -1,10 +1,13 @@
-import React, { PropsWithChildren, createContext, useState } from 'react'
-import { useLocalStorage } from '@/hooks/useLocalStorage'
-import { AyahDetailsInArray } from '@/types/AyahDetails'
-import { arabic } from '../constants/quran/arapca'
-import endings from '../constants/quran/pageEndings.json'
-import surah_details from '../constants/quran/surahDetails.json'
-import turkish from '../constants/quran/turkishMeal.json'
+"use client"
+import React, { type PropsWithChildren, createContext, useState, useEffect, CSSProperties } from "react"
+import { useLocalStorage } from "@/hooks/useLocalStorage"
+import type { AyahDetailsInArray } from "@/types/AyahDetails"
+import { arabic } from "../constants/quran/arapca"
+import endings from "../constants/quran/pageEndings.json"
+import surah_details from "../constants/quran/surahDetails.json"
+import turkish from "../constants/quran/turkishMeal.json"
+import { arabicFonts } from "@/components/Settings/arabicFonts"
+import { cn } from "@/lib/utils"
 
 type BookmarkData = {
   id: number
@@ -19,27 +22,26 @@ interface QuranContextProps {
   setBookmark: (page: number, id?: number) => void
   setHover: (surah: number, ayah: number, value: boolean) => void
   toggleSelected: (surah: number, ayah: number) => void
-  isSelected: (surah: number, ayah: number) => object
-  isHovered: (surah: number, ayah: number) => object
-  getStyles: (surah: number, ayah: number) => object
+  isSelected: (surah: number, ayah: number) => string
+  isHovered: (surah: number, ayah: number) => string
+  getStyles: (surah: number, ayah: number) => string
   bookmarks: BookmarkData[]
+  arabicFont: string
+  setArabicFont: (font: string) => void
+  mealSlug: string
+  setMealSlug: (id: string) => void
 }
 
-export const QuranContext = createContext<QuranContextProps>(
-  {} as QuranContextProps,
-)
+export const QuranContext = createContext<QuranContextProps>({} as QuranContextProps)
 
 type QuranProviderProps = PropsWithChildren
 
 export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
-  const [bookmarks, setBookmarks] = useLocalStorage<BookmarkData[]>(
-    'bookmarks',
-    [],
-  )
-  const [hoveredAyah, setHoveredAyah] = useState<[number, number] | null>(null)
-  const [selectedAyahs, setSelectedAyahs] = useState<Record<string, boolean>>(
-    {},
-  )
+  const [bookmarks, setBookmarks] = useLocalStorage<BookmarkData[]>("quranBookmarks", [])
+  const [mealSlug, setMealSlug] = useLocalStorage("meadSlug", '')
+  const [hoveredVerse, setHoveredVerse] = useState<[number, number] | null>(null)
+  const [selectedVerses, setSelectedVerses] = useState<Record<string, boolean>>({})
+  const [arabicFont, setArabicFont] = useLocalStorage("arabicFont", arabicFonts[0].name)
 
   const hasLineEnding = (sure: number, ayet: number, wordIndex: number) => {
     const surah = endings[sure - 1]
@@ -77,45 +79,46 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
   }
 
   const setHover = (surah: number, ayah: number, value: boolean) => {
-    setHoveredAyah(value ? [surah, ayah] : null)
+    setHoveredVerse(value ? [surah, ayah] : null)
   }
 
   const toggleSelected = (surah: number, ayah: number) => {
-    setSelectedAyahs((prev) => ({
+    setSelectedVerses((prev) => ({
       ...prev,
       [`${surah}-${ayah}`]: !prev[`${surah}-${ayah}`],
     }))
   }
 
   const isSelected = (surah: number, ayah: number) => {
-    return selectedAyahs[`${surah}-${ayah}`]
-      ? {
-        fontWeight: 'bold',
-        bg: 'green.100',
-        _dark: {
-          bg: 'green.700',
-        },
-      }
-      : {}
+    return selectedVerses[`${surah}-${ayah}`]
+      ? "bg-green-100 dark:bg-green-700"
+      : ""
   }
 
-  const isHovered = (surah: number, ayah: number) => {
-    return hoveredAyah?.[0] === surah && hoveredAyah?.[1] === ayah
-      ? {
-        bg: 'gray.100',
-        _dark: {
-          bg: 'gray.700',
-        },
-      }
-      : {}
-  }
+  const isHovered = (surah: number, ayah: number) =>
+    hoveredVerse?.[0] === surah && hoveredVerse?.[1] === ayah
+      ? "bg-blue-300 dark:bg-gray-700"
+      : "";
 
   const getStyles = (sure: number, ayet: number) => {
-    return {
-      ...isHovered(sure, ayet),
-      ...isSelected(sure, ayet),
-    }
+    return cn(
+      isHovered(sure, ayet),
+      isSelected(sure, ayet),
+    )
   }
+
+  useEffect(() => {
+    const loadFont = async () => {
+      const font = arabicFonts.find((f) => f.name === arabicFont)
+      if (font) {
+        const fontFace = new FontFace(font.name, `url(${font.path})`)
+        await fontFace.load()
+        document.fonts.add(fontFace)
+        document.body.style.setProperty("--arabic-font", font.name)
+      }
+    }
+    loadFont()
+  }, [arabicFont])
 
   return (
     <QuranContext.Provider
@@ -130,6 +133,10 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
         setHover,
         isSelected,
         isHovered,
+        arabicFont,
+        setArabicFont,
+        mealSlug,
+        setMealSlug
       }}
     >
       {children}
@@ -140,9 +147,7 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
 export const useQuranContext = () => React.useContext(QuranContext)
 
 export const getSurahDetails = (sure: number) => {
-  const [order, page, isMekki, name, totalAyahs] = surah_details[
-    sure - 1
-  ] as AyahDetailsInArray
+  const [order, page, isMekki, name, totalAyahs] = surah_details[sure - 1] as AyahDetailsInArray
   return {
     order,
     page,
@@ -156,3 +161,4 @@ export const getSurahDetails = (sure: number) => {
 export const hasBasmala = (sure: number) => {
   return sure !== 1 && sure !== 9
 }
+

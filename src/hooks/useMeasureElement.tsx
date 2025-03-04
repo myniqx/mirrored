@@ -1,18 +1,14 @@
-import { useRef, useState, useEffect } from 'react'
+"use client"
 
-type useMeasureElementProps = {
-  p?: number
-  px?: number
-  py?: number
-  pl?: number
-  pr?: number
-  pt?: number
-  pb?: number
-  name?: string
+import type React from "react"
+import { useRef, useState, useEffect } from "react"
+
+type UseMeasureElementProps = {
+  inside?: boolean
 }
 
 const useMeasureElement = <T extends HTMLElement = HTMLElement>(
-  props?: useMeasureElementProps,
+  { inside = false }: UseMeasureElementProps = {},
 ): [
     React.RefObject<T>,
     {
@@ -33,31 +29,34 @@ const useMeasureElement = <T extends HTMLElement = HTMLElement>(
     right: 0,
     bottom: 0,
   })
-  const padding = {
-    left: props?.pl || props?.px || props?.p || 0,
-    right: props?.pr || props?.px || props?.p || 0,
-    top: props?.pt || props?.py || props?.p || 0,
-    bottom: props?.pb || props?.py || props?.p || 0,
-  }
 
   useEffect(() => {
-    if (!ref?.current) return
+    const element = ref.current
+    if (!element) return
 
-    const observer = new ResizeObserver(([entry]) => {
-      const rect = entry.contentRect
+    const observer = new ResizeObserver(() => {
+      const rect = element.getBoundingClientRect()
+      const styles = getComputedStyle(element)
+
+      const paddingLeft = inside ? parseFloat(styles.paddingLeft) + parseFloat(styles.borderLeftWidth) : 0
+      const paddingRight = inside ? parseFloat(styles.paddingRight) + parseFloat(styles.borderRightWidth) : 0
+      const paddingTop = inside ? parseFloat(styles.paddingTop) + parseFloat(styles.borderTopWidth) : 0
+      const paddingBottom = inside ? parseFloat(styles.paddingBottom) + parseFloat(styles.borderBottomWidth) : 0
+
       setMeasurements({
-        width: rect.width - padding.left - padding.right,
-        height: rect.height - padding.top - padding.bottom,
-        top: rect.top + padding.top,
-        left: rect.left + padding.left,
-        right: rect.right - padding.right,
-        bottom: rect.bottom - padding.bottom,
+        width: rect.width - paddingLeft - paddingRight,
+        height: rect.height - paddingTop - paddingBottom,
+        top: rect.top + paddingTop,
+        left: rect.left + paddingLeft,
+        right: rect.right - paddingRight,
+        bottom: rect.bottom - paddingBottom,
       })
     })
 
-    observer.observe(ref.current)
+    observer.observe(element)
+
     return () => observer.disconnect()
-  }, [ref, padding.bottom, padding.left, padding.right, padding.top])
+  }, [inside])
 
   return [ref, measurements]
 }
