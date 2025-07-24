@@ -34,7 +34,7 @@ const Navbar: React.FC<NavbarProps> = () => {
   return (
     <div className="flex items-center justify-between py-4 px-6 absolute left-0 right-0 top-0 h-14 bg-gray-100 dark:bg-gray-800 shadow-md">
       {/* Left section: Logo, back button, and header content */}
-      <div className="flex items-center flex-grow-0 flex-shrink-1">
+      <div className="flex items-center grow-0 flex-shrink-1">
         <Image width={32} height={32} alt="Mirrored Logo" src="/icon.png" />
         <Button variant="ghost" size="icon">
           <MdArrowBack />
@@ -43,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = () => {
       </div>
 
       {/* Center section: Page navigation */}
-      <div className="flex-grow flex-1 flex items-center justify-center text-center">
+      <div className="grow flex-1 flex items-center justify-center text-center">
         <div className="flex items-center gap-4 justify-center">
           <Button
             variant="ghost"

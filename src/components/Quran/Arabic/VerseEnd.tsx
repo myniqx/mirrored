@@ -21,7 +21,7 @@ export const VerseEnd: React.FC<VerseEndProps> = ({ surah, ayah }) => {
 
   return (
     <div
-      className={`relative flex flex-col flex-shrink-0 ${getStyles(surah, ayah)} `}
+      className={`relative flex flex-col shrink-0 ${getStyles(surah, ayah)} `}
       onClick={() => toggleSelected(surah, ayah)}
     >
       <p

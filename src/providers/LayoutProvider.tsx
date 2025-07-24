@@ -112,7 +112,7 @@ export const LayoutProvider: React.FC<ProviderProps> = ({ children, toggleDarkTh
             <MdVisibility />
           </Button>
         )}
-        <div className="flex flex-1 flex-grow mt-14">
+        <div className="flex flex-1 grow mt-14">
           {children}
         </div>
       </div>
