@@ -13,7 +13,6 @@ const nextConfig = {
     parallelServerCompiles: true,
   },
   reactStrictMode: true,
-  swcMinify: true,
   // Disable server-side rendering for most pages
   // This will make the site mostly client-side rendered
   // except for the API routes and any pages that explicitly use getServerSideProps
