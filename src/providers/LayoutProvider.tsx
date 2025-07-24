@@ -23,6 +23,10 @@ interface LayoutProviderProps {
   setSearchID: (value: string) => void
   setMeasures: (value: MeasureProps) => void
   debug: false | string
+  getParams: <T = string>(key: string, defaultValue?: T) => T | undefined
+  getParamsAsArray: <T = string>(key: string) => T[]
+  changeParams: (newParams: { [key: string]: any }) => void
+  resetParams: () => void
 }
 
 export const LayoutContext = createContext<LayoutProviderProps>({} as LayoutProviderProps)
@@ -49,6 +53,28 @@ export const LayoutProvider: React.FC<ProviderProps> = ({ children, toggleDarkTh
   const [showMeal, setShowMeal] = useLocalStorage("showMeal", false)
   const [twoPageView, setTwoPageView] = useLocalStorage("twoPageView", false)
   const searchText = searchVisible ? (searchTexts[searchID] ?? "") : undefined
+  const [params, setParams] = useState<{ [key: string]: any }>({})
+
+  const changeParams = (newParams: { [key: string]: any }) => {
+    setParams((prevParams) => ({
+      ...prevParams,
+      ...newParams,
+    }))
+  }
+  const getParams = <T = string>(key: string, defaultValue?: T) => {
+    return params[key] as T || defaultValue
+  }
+
+  const getParamsAsArray = <T = string>(key: string) => {
+    const value = getParams(key)
+    if (!value) return [] as T[]
+    const array = Array.isArray(value) ? value : [value]
+    return array as T[]
+  }
+
+  const resetParams = () => {
+    setParams({})
+  }
 
   const setHeaderContent = (value: ReactNode | null) => {
     setHeaderContent_(value ?? <p>{common.appName}</p>)
@@ -71,6 +97,10 @@ export const LayoutProvider: React.FC<ProviderProps> = ({ children, toggleDarkTh
         setTwoPageView,
         searchText,
         setSearchID,
+        changeParams,
+        getParams,
+        getParamsAsArray,
+        resetParams,
         debug: false // "p-1 bg-gray-800 text-white dark:bg-white/80 dark:text-black rounded-lg", 
       }}
     >
@@ -82,7 +112,9 @@ export const LayoutProvider: React.FC<ProviderProps> = ({ children, toggleDarkTh
             <MdVisibility />
           </Button>
         )}
-        <div className="flex flex-1 flex-grow mt-14">{children}</div>
+        <div className="flex flex-1 flex-grow mt-14">
+          {children}
+        </div>
       </div>
     </LayoutContext.Provider>
   )

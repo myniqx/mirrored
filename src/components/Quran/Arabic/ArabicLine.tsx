@@ -35,7 +35,14 @@ export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width, fontS
 
   }, [widths])
 
+  useEffect(() => {
+    console.log("space", space)
+  }, [space])
+
+  const allWords = words.map(w => w.ayah).join(",")
+
   const groupedWords = useMemo(() => {
+    setWidths({})
     const groups: PartialAyahViewProps[] = []
     let currentGroup: PartialAyahViewProps = {
       words: [],
@@ -74,7 +81,7 @@ export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width, fontS
     }
 
     return groups
-  }, [width, fontSize, space, words])
+  }, [width, fontSize, space, allWords])
 
   const setWordWidth = (surah: number, ayah: number, wordIndex: number, width: number) => {
     const key = `${surah}.${ayah}.${wordIndex}`

@@ -18,7 +18,7 @@ const Home = () => {
           />
         </div>
 
-        <div className="absolute left-10 lg:left-1/2 top-10 bottom-10 right-10 gap-8 bg-black/70 flex flex-col">
+        <div className="absolute left-10 lg:left-1/2 top-10 bottom-10 right-10 gap-8 flex flex-col">
           <h1 className="text-4xl md:text-5xl leading-[0.9em]">{common.appName}</h1>
           <MainSearchBox />
           <MainMenu />

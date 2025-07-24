@@ -3,6 +3,10 @@ import type { Metadata } from "next"
 import { Amiri_Quran, Poppins, Prosto_One, Roboto_Serif, Scheherazade_New } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
+import { LayoutProvider } from "@/providers/LayoutProvider"
+
+
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "900"],
@@ -51,8 +55,9 @@ export default function RootLayout({
         className={`${arabicFont.variable} ${headerFont.variable} ${bodyFont.variable} ${quranFont.variable} ${poppins.variable}`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+          <LayoutProvider>{children}</LayoutProvider>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   )
