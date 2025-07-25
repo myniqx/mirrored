@@ -38,7 +38,7 @@ type QuranProviderProps = PropsWithChildren
 
 export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
   const [bookmarks, setBookmarks] = useLocalStorage<BookmarkData[]>("quranBookmarks", [])
-  const [mealSlug, setMealSlug] = useLocalStorage("meadSlug", '')
+  const [mealSlug, setMealSlug] = useLocalStorage("mealSlug", '')
   const [hoveredVerse, setHoveredVerse] = useState<[number, number] | null>(null)
   const [selectedVerses, setSelectedVerses] = useState<Record<string, boolean>>({})
   const [arabicFont, setArabicFont] = useLocalStorage("arabicFont", arabicFonts[0].name)

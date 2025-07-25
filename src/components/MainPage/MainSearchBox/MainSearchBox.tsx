@@ -11,7 +11,7 @@ export const MainSearchBox = () => {
 
   return (
     <div className="flex items-center relative w-full">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+      <Search className="absolute left-3 top-1/2 w-6 h-6 transform -translate-y-1/2 text-muted-foreground" />
       <Input
         placeholder="Search"
         defaultValue={q}

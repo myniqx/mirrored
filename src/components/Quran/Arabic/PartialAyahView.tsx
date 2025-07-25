@@ -23,9 +23,9 @@ export const PartialAyahView: FC<PartialAyahViewProps> = ({
   const hidden = words.some(w => w === 0)
 
   const content = useMemo(() => {
-   return words.map((word, i) => {
-      if (typeof word === "number") return <div key={i} style={{ width: `${word}px` }} />
-      if (word.isEnd) return <VerseEnd key={i} surah={word.surah} ayah={word.ayah} />
+    return words.map((word, i) => {
+      if (typeof word === "number") return <div key={`space-${i}-${word}`} style={{ width: `${word}px` }} />
+      if (word.isEnd) return <VerseEnd key={`${word.surah}.${word.ayah}`} surah={word.surah} ayah={word.ayah} />
       else return <WordView key={`${word.surah}.${word.ayah}.${word.wordIndex}`} {...word} />
     })
   }, [words])
@@ -38,6 +38,4 @@ export const PartialAyahView: FC<PartialAyahViewProps> = ({
       {content}
     </div>
   )
-
-
 }

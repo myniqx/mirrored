@@ -1,5 +1,5 @@
 "use client"
-import { type FC, useEffect, useState } from "react"
+import { type FC, useEffect, useMemo, useState } from "react"
 import type { SinglePageViewProps } from "../Arabic/types"
 import { getSurahDetails, useQuranContext } from "@/providers/QuranProvider"
 import { useChangeParams } from "@/hooks/useChangeParam"
@@ -10,12 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import pageContent from "../../../constants/quran/pageContents.json"
 import meals from "../../../constants/meal/meal.json"
 import type { QuranData, Verse } from "./types"
+import { useLocalStorage } from "@/hooks/useLocalStorage"
 
 export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
-  const content = pageContent[page]
+  const content = useMemo(() => pageContent[page], [page])
   const { setHover, getStyles, toggleSelected, mealSlug, setMealSlug } = useQuranContext()
-  const selectedMeal = mealSlug ? meals.find((m) => m.slug === mealSlug) : undefined
-
+  const selectedMeal = useMemo(() => mealSlug ? meals.find((m) => m.slug === mealSlug) : meals[0], [meals, mealSlug])
   const [mealAyah, setMealAyah] = useState<(Verse & { surah: number; ayah: number })[]>([])
 
   useEffect(() => {
@@ -32,8 +32,7 @@ export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
 
       setMealAyah(verseList)
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMeal]) //Corrected dependencies
+  }, [selectedMeal, content])
 
   return (
     <div className="flex flex-col gap-4 border w-full px-4 pb-12">

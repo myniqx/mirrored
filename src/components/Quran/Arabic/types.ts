@@ -6,12 +6,14 @@ type LineHeader = {
 type LineBesmele = {
   type: "besmele"
   fontSize: number
+  surah: number
 }
 
 export type LineContent = {
   type: "content"
   words: LineWord[]
   fontSize: number
+  sentence: string
 }
 
 export type LineDetails = LineHeader | LineBesmele | LineContent

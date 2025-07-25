@@ -42,7 +42,7 @@ export const SinglePageView: React.FC<SinglePageViewProps> = ({ page }) => {
     const content = pageContent[page]
     const list: LineDetails[] = []
     let listWords: LineWord[] = []
-    const zero: Omit<LineContent, "type" | 'words'> = { fontSize: 0 }
+    const zero: Omit<LineContent, "type" | 'words' | 'sentence'> = { fontSize: 0 }
 
     content.forEach(([surah, ayah]) => {
       if (ayah === 0) {
@@ -50,7 +50,7 @@ export const SinglePageView: React.FC<SinglePageViewProps> = ({ page }) => {
         return
       }
       if (ayah === 1 && hasBasmala(surah)) {
-        list.push({ type: "besmele", fontSize: 0 })
+        list.push({ type: "besmele", fontSize: 0, surah })
       }
 
       const words = getArabic(surah, ayah)
@@ -59,7 +59,12 @@ export const SinglePageView: React.FC<SinglePageViewProps> = ({ page }) => {
         listWords.push({ isEnd: false, surah, ayah, word: w, wordIndex: i })
 
         if (hasLineEnding(surah, ayah, i)) {
-          list.push({ type: "content", words: listWords, ...zero })
+          list.push({
+            type: "content",
+            words: listWords,
+            sentence: listWords.reduce((s, w) => s + (w.isEnd ? getArabicNumberWithShape(w.ayah) : w.word), ''),
+            ...zero
+          })
           listWords = []
         }
       })
@@ -67,13 +72,23 @@ export const SinglePageView: React.FC<SinglePageViewProps> = ({ page }) => {
       listWords.push({ isEnd: true, surah, ayah })
 
       if (hasLineEnding(surah, ayah, -1)) {
-        list.push({ type: "content", words: listWords, ...zero })
+        list.push({
+          type: "content",
+          words: listWords,
+          sentence: listWords.reduce((s, w) => s + (w.isEnd ? getArabicNumberWithShape(w.ayah) : w.word), ''),
+          ...zero
+        })
         listWords = []
       }
     })
 
     if (listWords.length > 0) {
-      list.push({ type: "content", words: listWords, ...zero })
+      list.push({
+        type: "content",
+        words: listWords,
+        sentence: listWords.reduce((s, w) => s + (w.isEnd ? getArabicNumberWithShape(w.ayah) : w.word), ''),
+        ...zero
+      })
     }
 
     return list
@@ -87,15 +102,9 @@ export const SinglePageView: React.FC<SinglePageViewProps> = ({ page }) => {
     const fontSizes = lineList
       .map((line) => {
         if (line.type !== 'content') return { fontSize: 0, text: '', width: 0 }
-        const sentences = line.words
-          .map((w) => {
-            if (w.isEnd) return getArabicNumberWithShape(w.ayah)
-            return w.word
-          })
-          .join('')
 
         return findFontSize2({
-          text: sentences,
+          text: line.sentence,
           gapCount: line.words.length - 1,
           maxWidth,
           font,
@@ -113,7 +122,7 @@ export const SinglePageView: React.FC<SinglePageViewProps> = ({ page }) => {
     })
 
     return lineList
-  }, [lineList, width])
+  }, [lineList, width, page])
 
 
   return (
@@ -128,11 +137,11 @@ export const SinglePageView: React.FC<SinglePageViewProps> = ({ page }) => {
       >
         {(line, index) => {
           if (line.type === 'header') {
-            return <SurahHeader key={index} surah={line.surah} />
+            return <SurahHeader key={`header-${line.surah}`} surah={line.surah} />
           } else if (line.type === 'besmele') {
-            return <Besmele key={index} fontSize={line.fontSize} />
+            return <Besmele key={`besmele-${line.surah}`} fontSize={line.fontSize} />
           } else {
-            return <ArabicLine key={index} {...line} width={width} />
+            return <ArabicLine key={`line-${line.sentence}`} {...line} width={width} />
           }
         }}
       </For>
