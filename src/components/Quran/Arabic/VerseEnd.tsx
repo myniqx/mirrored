@@ -1,9 +1,9 @@
-import type React from "react"
-import { getArabicNumberWithShape } from "@/utils/arabicNumber"
-import { usePageLine } from "./ArabicLine"
-import { useQuranContext } from "@/providers/QuranProvider"
-import useMeasureElement from "@/hooks/useMeasureElement"
-import { useEffect } from "react"
+import type React from 'react'
+import { getArabicNumberWithShape } from '@/utils/arabicNumber'
+import { usePageLine } from './ArabicLine'
+import { useQuranContext } from '@/providers/QuranProvider'
+import useMeasureElement from '@/hooks/useMeasureElement'
+import { useEffect } from 'react'
 
 type VerseEndProps = {
   surah: number
@@ -31,8 +31,9 @@ export const VerseEnd: React.FC<VerseEndProps> = ({ surah, ayah }) => {
       >
         {getArabicNumberWithShape(ayah)}
       </p>
-      <p className="line-clamp-1 absolute bottom-[-20px] left-[40%] text-center text-red-500">{ayah}</p>
+      <p className="line-clamp-1 absolute bottom-[-20px] left-[40%] text-center text-red-500">
+        {ayah}
+      </p>
     </div>
   )
 }
-

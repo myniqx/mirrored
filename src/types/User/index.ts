@@ -13,4 +13,3 @@ export interface Bookmark {
   lastReadAt: Date
   page: number
 }
-

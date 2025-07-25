@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import type { User, Bookmark } from "@/types/User"
-import * as api from "@/services/api"
+import { useState, useEffect } from 'react'
+import type { User, Bookmark } from '@/types/User'
+import * as api from '@/services/api'
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null)
@@ -14,7 +14,7 @@ export const useAuth = () => {
         const userData = await api.getUserProfile()
         setUser(userData)
       } catch (error) {
-        console.error("Failed to load user profile:", error)
+        console.error('Failed to load user profile:', error)
       } finally {
         setLoading(false)
       }
@@ -23,13 +23,17 @@ export const useAuth = () => {
     loadUser()
   }, [])
 
-  const login = async (email: string, password: string) => {
+  const login = async (
+    email: string,
+    password: string,
+    rememberMe?: boolean,
+  ) => {
     try {
       const userData = await api.login(email, password)
       setUser(userData)
       return userData
     } catch (error) {
-      console.error("Login failed:", error)
+      console.error('Login failed:', error)
       throw error
     }
   }
@@ -40,7 +44,7 @@ export const useAuth = () => {
       setUser(userData)
       return userData
     } catch (error) {
-      console.error("Registration failed:", error)
+      console.error('Registration failed:', error)
       throw error
     }
   }
@@ -50,7 +54,7 @@ export const useAuth = () => {
       await api.logout()
       setUser(null)
     } catch (error) {
-      console.error("Logout failed:", error)
+      console.error('Logout failed:', error)
       throw error
     }
   }
@@ -59,13 +63,13 @@ export const useAuth = () => {
     try {
       await api.forgotPassword(email)
     } catch (error) {
-      console.error("Forgot password request failed:", error)
+      console.error('Forgot password request failed:', error)
       throw error
     }
   }
 
   const addBookmark = async (name: string, page: number) => {
-    if (!user) throw new Error("User not authenticated")
+    if (!user) throw new Error('User not authenticated')
 
     try {
       const newBookmark = await api.addBookmark({
@@ -77,29 +81,34 @@ export const useAuth = () => {
       setUser({ ...user, bookmarks: [...user.bookmarks, newBookmark] })
       return newBookmark
     } catch (error) {
-      console.error("Failed to add bookmark:", error)
+      console.error('Failed to add bookmark:', error)
       throw error
     }
   }
 
-  const updateBookmark = async (bookmarkId: string, updates: Partial<Omit<Bookmark, "id">>) => {
-    if (!user) throw new Error("User not authenticated")
+  const updateBookmark = async (
+    bookmarkId: string,
+    updates: Partial<Omit<Bookmark, 'id'>>,
+  ) => {
+    if (!user) throw new Error('User not authenticated')
 
     try {
       const updatedBookmark = await api.updateBookmark(bookmarkId, updates)
       setUser({
         ...user,
-        bookmarks: user.bookmarks.map((b) => (b.id === bookmarkId ? updatedBookmark : b)),
+        bookmarks: user.bookmarks.map((b) =>
+          b.id === bookmarkId ? updatedBookmark : b,
+        ),
       })
       return updatedBookmark
     } catch (error) {
-      console.error("Failed to update bookmark:", error)
+      console.error('Failed to update bookmark:', error)
       throw error
     }
   }
 
   const deleteBookmark = async (bookmarkId: string) => {
-    if (!user) throw new Error("User not authenticated")
+    if (!user) throw new Error('User not authenticated')
 
     try {
       await api.deleteBookmark(bookmarkId)
@@ -108,7 +117,7 @@ export const useAuth = () => {
         bookmarks: user.bookmarks.filter((b) => b.id !== bookmarkId),
       })
     } catch (error) {
-      console.error("Failed to delete bookmark:", error)
+      console.error('Failed to delete bookmark:', error)
       throw error
     }
   }
@@ -125,4 +134,3 @@ export const useAuth = () => {
     deleteBookmark,
   }
 }
-

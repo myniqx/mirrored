@@ -1,22 +1,32 @@
-"use client"
-import { type FC, useEffect, useMemo, useState } from "react"
-import type { SinglePageViewProps } from "../Arabic/types"
-import { getSurahDetails, useQuranContext } from "@/providers/QuranProvider"
-import { useChangeParams } from "@/hooks/useChangeParam"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+'use client'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { getSurahDetails, useQuranContext } from '@/providers/QuranProvider'
+import { type FC, useEffect, useMemo, useState } from 'react'
+import type { SinglePageViewProps } from '../Arabic/types'
 
-import pageContent from "../../../constants/quran/pageContents.json"
-import meals from "../../../constants/meal/meal.json"
-import type { QuranData, Verse } from "./types"
-import { useLocalStorage } from "@/hooks/useLocalStorage"
+import meals from '../../../constants/meal/meal.json'
+import pageContent from '../../../constants/quran/pageContents.json'
+import type { QuranData, Verse } from './types'
 
 export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
   const content = useMemo(() => pageContent[page], [page])
-  const { setHover, getStyles, toggleSelected, mealSlug, setMealSlug } = useQuranContext()
-  const selectedMeal = useMemo(() => mealSlug ? meals.find((m) => m.slug === mealSlug) : meals[0], [meals, mealSlug])
-  const [mealAyah, setMealAyah] = useState<(Verse & { surah: number; ayah: number })[]>([])
+  const { setHover, getStyles, toggleSelected, mealSlug, setMealSlug } =
+    useQuranContext()
+  const selectedMeal = useMemo(
+    () => (mealSlug ? meals.find((m) => m.slug === mealSlug) : meals[0]),
+    [meals, mealSlug],
+  )
+  const [mealAyah, setMealAyah] = useState<
+    (Verse & { surah: number; ayah: number })[]
+  >([])
 
   useEffect(() => {
     if (!selectedMeal) return
@@ -39,7 +49,10 @@ export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
       <div className="flex w-full gap-4 justify-between items-center p-2">
         <p>Seçili Meal: {selectedMeal?.name}</p>
         <div className="w-1/2"></div>
-        <Select value={mealSlug} onValueChange={(value) => setMealSlug(value)}>
+        <Select
+          value={selectedMeal?.slug || mealSlug}
+          onValueChange={(value) => setMealSlug(value)}
+        >
           <SelectTrigger className="w-[320px]">
             <SelectValue placeholder="Bir meal seçin" />
           </SelectTrigger>
@@ -55,7 +68,6 @@ export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
 
       <div className="flex flex-col">
         {mealAyah.map((verse, index) => {
-
           return (
             <Card
               key={index}
@@ -66,28 +78,31 @@ export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
             >
               <CardHeader className="flex flex-row justify-between items-start p-4">
                 {verse.ayah === 0 ? (
-                  <h2 className="text-sm font-bold" >
+                  <h2 className="text-sm font-bold">
                     {getSurahDetails(verse.surah).name}
                   </h2>
                 ) : (
                   <>
-                    <h3 className="text-sm font-medium" dangerouslySetInnerHTML={{ __html: verse?.text ?? "" }} />
+                    <h3
+                      className="text-sm font-medium"
+                      dangerouslySetInnerHTML={{ __html: verse?.text ?? '' }}
+                    />
                     <Badge>{verse.ayah}</Badge>
                   </>
                 )}
               </CardHeader>
-              {
-                verse?.subtext && (
-                  <CardContent className="text-muted-foreground pt-0">
-                    <div className="w-full" dangerouslySetInnerHTML={{ __html: verse?.subtext ?? "" }} />
-                  </CardContent>
-                )
-              }
+              {verse?.subtext && (
+                <CardContent className="text-muted-foreground pt-0">
+                  <div
+                    className="w-full"
+                    dangerouslySetInnerHTML={{ __html: verse?.subtext ?? '' }}
+                  />
+                </CardContent>
+              )}
             </Card>
           )
         })}
       </div>
-    </div >
+    </div>
   )
 }
-

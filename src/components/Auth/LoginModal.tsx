@@ -1,10 +1,10 @@
-"use client"
-import { useState } from "react"
-import type React from "react"
+'use client'
+import { useState } from 'react'
+import type React from 'react'
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Dialog,
   DialogContent,
@@ -12,8 +12,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { useAuth } from "@/hooks/useAuth"
+} from '@/components/ui/dialog'
+import { useAuth } from '@/hooks/useAuth'
 
 interface LoginModalProps {
   isOpen: boolean
@@ -21,8 +21,8 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
   const { login } = useAuth()
 
@@ -37,7 +37,9 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Giriş Yap</DialogTitle>
-          <DialogDescription>Hesabınıza giriş yapın veya yeni bir hesap oluşturun.</DialogDescription>
+          <DialogDescription>
+            Hesabınıza giriş yapın veya yeni bir hesap oluşturun.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
@@ -93,4 +95,3 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     </Dialog>
   )
 }
-

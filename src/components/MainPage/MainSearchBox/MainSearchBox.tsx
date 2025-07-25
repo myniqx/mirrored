@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import { useChangeParams } from "@/hooks/useChangeParam"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search, X } from "lucide-react"
+import { useChangeParams } from '@/hooks/useChangeParam'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Search, X } from 'lucide-react'
 
 export const MainSearchBox = () => {
   const { getParams, changeParams } = useChangeParams()
-  const q = getParams("q")
+  const q = getParams('q')
 
   return (
     <div className="flex items-center relative w-full">
@@ -31,4 +31,3 @@ export const MainSearchBox = () => {
     </div>
   )
 }
-

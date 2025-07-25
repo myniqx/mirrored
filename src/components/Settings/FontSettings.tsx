@@ -1,10 +1,15 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useQuranContext } from "@/providers/QuranProvider"
-import { arabicFonts } from "./arabicFonts"
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { useQuranContext } from '@/providers/QuranProvider'
+import { arabicFonts } from './arabicFonts'
 
 export const FontSettings = () => {
   const { arabicFont, setArabicFont } = useQuranContext()
@@ -31,4 +36,3 @@ export const FontSettings = () => {
     </DropdownMenu>
   )
 }
-

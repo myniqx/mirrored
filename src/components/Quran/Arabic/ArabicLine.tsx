@@ -1,15 +1,15 @@
-"use client"
+'use client'
 
-import React, { useEffect } from "react"
+import React, { useEffect } from 'react'
 
-import { createContext, useContext, useMemo } from "react"
-import { ArabicLineAspectRatio, type LineWord } from "./types"
-import { VerseEnd } from "./VerseEnd"
-import { WordView } from "./WordView"
-import { PartialAyahView, PartialAyahViewProps } from "./PartialAyahView"
-import { useLayoutContext } from "@/providers/LayoutProvider"
-import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
+import { createContext, useContext, useMemo } from 'react'
+import { ArabicLineAspectRatio, type LineWord } from './types'
+import { VerseEnd } from './VerseEnd'
+import { WordView } from './WordView'
+import { PartialAyahView, PartialAyahViewProps } from './PartialAyahView'
+import { useLayoutContext } from '@/providers/LayoutProvider'
+import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
 
 type ArabicLineProps = {
   words?: LineWord[]
@@ -19,20 +19,28 @@ type ArabicLineProps = {
 
 const LineContext = createContext<{
   fontSize: number
-  setWordWidth: (surah: number, ayah: number, wordIndex: number, width: number) => void
-}>({ fontSize: 36, setWordWidth: () => { } })
+  setWordWidth: (
+    surah: number,
+    ayah: number,
+    wordIndex: number,
+    width: number,
+  ) => void
+}>({ fontSize: 36, setWordWidth: () => {} })
 
-export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width, fontSize, }) => {
+export const ArabicLine: React.FC<ArabicLineProps> = ({
+  words = [],
+  width,
+  fontSize,
+}) => {
   const { debug } = useLayoutContext()
   const [widths, setWidths] = React.useState<Record<string, number>>({})
 
   const space = useMemo(() => {
     const values = Object.values(widths)
-    if (values.some(v => !v)) return 0
+    if (values.some((v) => !v)) return 0
 
     const total = values.reduce((a, b) => a + b, 0)
     return (width - total) / (values.length - 1)
-
   }, [widths])
 
   const groupedWords = useMemo(() => {
@@ -40,18 +48,21 @@ export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width, fontS
     let currentGroup: PartialAyahViewProps = {
       words: [],
       surah: 0,
-      ayah: 0
+      ayah: 0,
     }
 
     words.forEach((word, i) => {
-      if (word.surah !== currentGroup.surah || word.ayah !== currentGroup.ayah) {
+      if (
+        word.surah !== currentGroup.surah ||
+        word.ayah !== currentGroup.ayah
+      ) {
         if (currentGroup.words.length > 0) {
           groups.push(currentGroup)
         }
         currentGroup = {
           words: i !== 0 ? [space / 2] : [],
           surah: word.surah,
-          ayah: word.ayah
+          ayah: word.ayah,
         }
       }
 
@@ -60,8 +71,7 @@ export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width, fontS
         if (i < words.length - 1) {
           currentGroup.words.push(space / 2)
         }
-      }
-      else {
+      } else {
         currentGroup.words.push(word)
         if (i < words.length - 1) {
           currentGroup.words.push(space)
@@ -76,11 +86,16 @@ export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width, fontS
     return groups
   }, [width, fontSize, space, words])
 
-  const setWordWidth = (surah: number, ayah: number, wordIndex: number, width: number) => {
+  const setWordWidth = (
+    surah: number,
+    ayah: number,
+    wordIndex: number,
+    width: number,
+  ) => {
     const key = `${surah}.${ayah}.${wordIndex}`
     const oldWidth = widths[key]
     if (oldWidth !== width) {
-      setWidths(prev => ({ ...prev, [key]: width }))
+      setWidths((prev) => ({ ...prev, [key]: width }))
     }
   }
 
@@ -91,26 +106,24 @@ export const ArabicLine: React.FC<ArabicLineProps> = ({ words = [], width, fontS
         style={{ width, aspectRatio: ArabicLineAspectRatio }}
       >
         {debug && (
-          <div className={cn("absolute top-0 left-0 w-full ", debug)}>
+          <div className={cn('absolute top-0 left-0 w-full ', debug)}>
             <p>
               fontSize {fontSize}, width {width}, space {space}
             </p>
           </div>
         )}
-        {
-          groupedWords.map((group, i) => (
-            <PartialAyahView key={i} {...group} />
-          ))
-        }
+        {groupedWords.map((group, i) => (
+          <PartialAyahView key={i} {...group} />
+        ))}
         {space && (
           <Skeleton
             className="w-full absolute left-0 top-0"
             style={{ aspectRatio: ArabicLineAspectRatio }}
-          />)}
+          />
+        )}
       </div>
     </LineContext.Provider>
   )
 }
 
 export const usePageLine = () => useContext(LineContext)
-

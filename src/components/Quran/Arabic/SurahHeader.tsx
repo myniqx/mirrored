@@ -1,7 +1,7 @@
-import type React from "react"
-import { getSurahDetails } from "@/providers/QuranProvider"
-import Image from "next/image"
-import { HeaderAspectRatio } from "./types"
+import type React from 'react'
+import { getSurahDetails } from '@/providers/QuranProvider'
+import Image from 'next/image'
+import { HeaderAspectRatio } from './types'
 
 type SurahHeaderProps = {
   surah: number
@@ -33,4 +33,3 @@ export const SurahHeader: React.FC<SurahHeaderProps> = (props) => {
     </div>
   )
 }
-
