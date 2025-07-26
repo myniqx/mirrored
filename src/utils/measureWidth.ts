@@ -1,4 +1,3 @@
-
 type FontSizeProps = {
   text: string
   font?: string
@@ -11,14 +10,13 @@ type FontSizeProps = {
 export const findFontSize = ({
   text,
   maxWidth,
-  font = "font-arabic",
-  context
+  font = 'font-arabic',
+  context,
 }: FontSizeProps) => {
-
   if (!context) {
-    const canvas = document.createElement("canvas")
-    context = canvas.getContext("2d")
-    if (!context) throw new Error("Canvas context could not be created.")
+    const canvas = document.createElement('canvas')
+    context = canvas.getContext('2d')
+    if (!context) throw new Error('Canvas context could not be created.')
   }
 
   const deltaLimit = Math.max(-20, -0.05 * maxWidth)
@@ -48,16 +46,20 @@ export const findFontSize = ({
 }
 
 const getTextP = () => {
-  const span = document.createElement("p")
-  span.style.whiteSpace = "nowrap"
-  span.style.position = "absolute"
-  span.style.visibility = "hidden"
-  span.style.fontFamily = "var(--mc-fonts-arabic)"
+  const span = document.createElement('p')
+  span.style.whiteSpace = 'nowrap'
+  span.style.position = 'absolute'
+  span.style.visibility = 'hidden'
+  span.style.fontFamily = 'var(--mc-fonts-arabic)'
   document.body.appendChild(span)
   return span
 }
 
-export const getTextWidthFallback = (text: string, fontSize: number, p: HTMLParagraphElement) => {
+export const getTextWidthFallback = (
+  text: string,
+  fontSize: number,
+  p: HTMLParagraphElement,
+) => {
   p.style.fontSize = `${fontSize}px`
   p.innerText = text
   return p.getBoundingClientRect().width
@@ -66,14 +68,14 @@ export const getTextWidthFallback = (text: string, fontSize: number, p: HTMLPara
 export const findFontSize2 = ({
   text,
   maxWidth,
-  font = "font-arabic",
+  font = 'font-arabic',
   textP,
   gapCount = 0,
 }: FontSizeProps) => {
   if (!textP) {
     textP = getTextP()
   }
-  const targetWidth = maxWidth - (gapCount * (maxWidth * 0.01))
+  const targetWidth = maxWidth - gapCount * (maxWidth * 0.01)
   const deltaLimit = Math.max(-20, -0.05 * targetWidth)
   let minFontSize = 1
   let maxFontSize = 180

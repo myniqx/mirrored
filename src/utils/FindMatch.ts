@@ -3,21 +3,21 @@ type LowerString = string
 const getCharacter = (C: string) => {
   const c = C.toLowerCase()
   switch (c) {
-    case "ö":
-      return "o"
-    case "ç":
-      return "c"
-    case "ş":
-      return "s"
-    case "ğ":
-      return "g"
-    case "ü":
-    case "û":
-      return "u"
-    case "ı":
-      return "i"
-    case "â":
-      return "a"
+    case 'ö':
+      return 'o'
+    case 'ç':
+      return 'c'
+    case 'ş':
+      return 's'
+    case 'ğ':
+      return 'g'
+    case 'ü':
+    case 'û':
+      return 'u'
+    case 'ı':
+      return 'i'
+    case 'â':
+      return 'a'
     default:
       return c
   }
@@ -25,14 +25,17 @@ const getCharacter = (C: string) => {
 
 export const rebuildQuery = (query: string | undefined) => {
   if (!query) return null
-  return query.split("").map(getCharacter).join("")
+  return query.split('').map(getCharacter).join('')
 }
 
 const ignorableCharacter = (c: string) => {
-  return c === "'" || c === "-"
+  return c === "'" || c === '-'
 }
 
-export function findMatch(text: string, query: LowerString | null): string | null {
+export function findMatch(
+  text: string,
+  query: LowerString | null,
+): string | null {
   if (!query) return null
 
   const len = text.length
@@ -60,4 +63,3 @@ export function findMatch(text: string, query: LowerString | null): string | nul
 
   return null
 }
-
