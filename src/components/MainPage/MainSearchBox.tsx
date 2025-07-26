@@ -2,25 +2,20 @@
 
 import { useChangeParams } from '@/hooks/useChangeParam'
 import { Input } from '@/components/ui/input'
-import { MdClose, MdSearch } from 'react-icons/md'
 import { Button } from '@/components/ui/button'
-import { useLayoutContext } from '@/providers/LayoutProvider'
-import { useRef } from 'react'
+import { LucideSearch, LucideX } from 'lucide-react'
 
 export const MainSearchBox = () => {
-  const { getParams, changeParams } = useLayoutContext();
-  const q = getParams('q');
-  const ref = useRef<HTMLInputElement>(null);
+  const { getParams, changeParams } = useChangeParams()
+  const q = getParams('q')
 
   return (
-    <div className="flex-1 flex flex-row items-center gap-2 w-full relative">
-
-      <MdSearch size={24} className="absolute left-2" />
+    <div className="flex-1 flex flex-row w-full p-2">
+      <LucideSearch />
       <Input
-        ref={ref}
         placeholder="Search"
         defaultValue={q}
-        className="rounded-lg placeholder-whiteAlpha-500 flex-1 px-10"
+        className="bg-gray-700 rounded-lg placeholder-whiteAlpha-500"
         onChange={(e) => changeParams({ q: e.target.value })}
       />
       <Button
@@ -28,14 +23,10 @@ export const MainSearchBox = () => {
         disabled={!q}
         aria-label="Search"
         variant="ghost"
-        className="absolute right-2"
-        onClick={() => {
-          changeParams({ q: undefined })
-          ref.current!.value = ''
-        }}
+        onClick={() => changeParams({ q: undefined })}
       >
-        <MdClose />
+        <LucideX />
       </Button>
     </div>
-  );
+  )
 }

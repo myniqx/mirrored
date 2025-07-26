@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import type { User } from "@/types/User"
-import { auth, db } from "@/lib/firebase"
+import { useState, useEffect } from 'react'
+import type { User } from '@/types/User'
+import { auth, db } from '@/lib/firebase'
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -12,9 +12,9 @@ import {
   sendPasswordResetEmail,
   onAuthStateChanged,
   setPersistence,
-  browserLocalPersistence
-} from "firebase/auth"
-import { ref, get, set, update } from "firebase/database"
+  browserLocalPersistence,
+} from 'firebase/auth'
+import { ref, get, set, update } from 'firebase/database'
 
 export const useAuth = () => {
   // States to manage user and loading status
@@ -24,10 +24,9 @@ export const useAuth = () => {
   // Listen to changes in user authentication state
   useEffect(() => {
     // Set persistent session management for Firebase
-    setPersistence(auth, browserLocalPersistence)
-      .catch((error) => {
-        console.error("Error setting session persistence:", error)
-      })
+    setPersistence(auth, browserLocalPersistence).catch((error) => {
+      console.error('Error setting session persistence:', error)
+    })
 
     // Listen for authentication state changes
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -43,17 +42,17 @@ export const useAuth = () => {
             // User exists in the database
             setUser({
               id: firebaseUser.uid,
-              email: firebaseUser.email || "",
-              ...snapshot.val()
+              email: firebaseUser.email || '',
+              ...snapshot.val(),
             } as User)
           } else {
             // User exists in Auth but not in the database, create a basic record
             const basicUserData = {
               id: firebaseUser.uid,
-              name: firebaseUser.displayName || "User",
-              email: firebaseUser.email || "",
-              photoURL: firebaseUser.photoURL || "",
-              bookmarks: []
+              name: firebaseUser.displayName || 'User',
+              email: firebaseUser.email || '',
+              photoURL: firebaseUser.photoURL || '',
+              bookmarks: [],
             }
             await set(userRef, basicUserData)
             setUser(basicUserData as User)
@@ -62,7 +61,7 @@ export const useAuth = () => {
           setUser(null)
         }
       } catch (error) {
-        console.error("Error fetching user data:", error)
+        console.error('Error fetching user data:', error)
         setUser(null)
       } finally {
         setLoading(false)
@@ -77,7 +76,11 @@ export const useAuth = () => {
   const login = async (email: string, password: string) => {
     try {
       setLoading(true)
-      const { user: firebaseUser } = await signInWithEmailAndPassword(auth, email, password)
+      const { user: firebaseUser } = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      )
 
       // Get user data from the database
       const userRef = ref(db, `users/${firebaseUser.uid}`)
@@ -87,10 +90,10 @@ export const useAuth = () => {
         // User exists in Auth but not in the database, create record
         const basicUserData = {
           id: firebaseUser.uid,
-          name: firebaseUser.displayName || "User",
-          email: firebaseUser.email || "",
-          photoURL: firebaseUser.photoURL || "",
-          bookmarks: []
+          name: firebaseUser.displayName || 'User',
+          email: firebaseUser.email || '',
+          photoURL: firebaseUser.photoURL || '',
+          bookmarks: [],
         }
         await set(userRef, basicUserData)
         setUser(basicUserData as User)
@@ -102,7 +105,7 @@ export const useAuth = () => {
       setUser(userData)
       return userData
     } catch (error) {
-      console.error("Login error:", error)
+      console.error('Login error:', error)
       throw error
     } finally {
       setLoading(false)
@@ -113,22 +116,26 @@ export const useAuth = () => {
   const register = async (name: string, email: string, password: string) => {
     try {
       setLoading(true)
-      const { user: firebaseUser } = await createUserWithEmailAndPassword(auth, email, password)
+      const { user: firebaseUser } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      )
 
       // Create new user record in the database
       const userData = {
         id: firebaseUser.uid,
         name,
         email,
-        photoURL: firebaseUser.photoURL || "",
-        bookmarks: []
+        photoURL: firebaseUser.photoURL || '',
+        bookmarks: [],
       }
 
       await set(ref(db, `users/${firebaseUser.uid}`), userData)
       setUser(userData as User)
       return userData
     } catch (error) {
-      console.error("Registration error:", error)
+      console.error('Registration error:', error)
       throw error
     } finally {
       setLoading(false)
@@ -141,7 +148,7 @@ export const useAuth = () => {
       await signOut(auth)
       setUser(null)
     } catch (error) {
-      console.error("Logout error:", error)
+      console.error('Logout error:', error)
       throw error
     }
   }
@@ -149,26 +156,26 @@ export const useAuth = () => {
   // Get user custom data
   const getData = async (): Promise<object> => {
     // Ensure user is authenticated
-    if (!user) throw new Error("User not authenticated")
+    if (!user) throw new Error('User not authenticated')
 
     try {
       const userRef = ref(db, `users/${user.id}`)
       const snapshot = await get(userRef)
 
       if (!snapshot.exists()) {
-        throw new Error("User record not found")
+        throw new Error('User record not found')
       }
       return snapshot.val()?.customData || {}
     } catch (error) {
-      console.error("Error fetching data:", error)
+      console.error('Error fetching data:', error)
       throw error
     }
   }
 
   // Set user custom data
   const setData = async (data: object) => {
-  // Ensure user is authenticated
-    if (!user) throw new Error("User not authenticated")
+    // Ensure user is authenticated
+    if (!user) throw new Error('User not authenticated')
 
     try {
       // Check if user record exists
@@ -179,19 +186,19 @@ export const useAuth = () => {
         // Create new user record if it doesn't exist
         await set(userRef, {
           id: user.id,
-          name: user.name || "",
-          email: user.email || "",
-          photoURL: user.photoURL || "",
-          customData: data
+          name: user.name || '',
+          email: user.email || '',
+          photoURL: user.photoURL || '',
+          customData: data,
         })
       } else {
         // Update existing record with new custom data
         await update(userRef, {
-          customData: data
+          customData: data,
         })
       }
     } catch (error) {
-      console.error("Error saving data:", error)
+      console.error('Error saving data:', error)
       throw error
     }
   }
@@ -212,10 +219,10 @@ export const useAuth = () => {
         // Create user record if it doesn't exist
         const userData = {
           id: firebaseUser.uid,
-          name: firebaseUser.displayName || "User",
-          email: firebaseUser.email || "",
-          photoURL: firebaseUser.photoURL || "",
-          bookmarks: []
+          name: firebaseUser.displayName || 'User',
+          email: firebaseUser.email || '',
+          photoURL: firebaseUser.photoURL || '',
+          bookmarks: [],
         }
         await set(userRef, userData)
         setUser(userData as User)
@@ -227,7 +234,7 @@ export const useAuth = () => {
       setUser(userData)
       return userData
     } catch (error) {
-      console.error("Google login failed:", error)
+      console.error('Google login failed:', error)
       throw error
     } finally {
       setLoading(false)
@@ -239,21 +246,21 @@ export const useAuth = () => {
     try {
       await sendPasswordResetEmail(auth, email)
     } catch (error) {
-      console.error("Password reset failed:", error)
+      console.error('Password reset failed:', error)
       throw error
     }
   }
 
   // Return hook's exported values and functions
   return {
-    user,         // Current user (if logged in)
-    loading,      // Loading state
-    login,        // Email/password login
-    register,     // New user registration
-    logout,       // Logout
-    getData,      // Get custom user data
-    setData,      // Set custom user data
+    user, // Current user (if logged in)
+    loading, // Loading state
+    login, // Email/password login
+    register, // New user registration
+    logout, // Logout
+    getData, // Get custom user data
+    setData, // Set custom user data
     loginWithGoogle, // Google login
-    resetPassword,   // Password reset
+    resetPassword, // Password reset
   }
 }

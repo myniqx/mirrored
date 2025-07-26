@@ -1,3 +1,2 @@
-export * from "./AyetMenuItem"
-export * from "./types"
-
+export * from './AyetMenuItem'
+export * from './types'

@@ -1,7 +1,7 @@
-import { ArabicLineAspectRatio } from "./types"
+import { ArabicLineAspectRatio } from './types'
 
 export const Besmele = ({ fontSize }: { fontSize: number }) => {
-  const words = ["بِسْمِ", "اللَّهِ", "الرَّحْمَنِ", "الرَّحِيمِ"]
+  const words = ['بِسْمِ', 'اللَّهِ', 'الرَّحْمَنِ', 'الرَّحِيمِ']
 
   return (
     <div
@@ -16,4 +16,3 @@ export const Besmele = ({ fontSize }: { fontSize: number }) => {
     </div>
   )
 }
-

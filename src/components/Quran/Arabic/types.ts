@@ -1,17 +1,19 @@
 type LineHeader = {
-  type: "header"
+  type: 'header'
   surah: number
 }
 
 type LineBesmele = {
-  type: "besmele"
+  type: 'besmele'
   fontSize: number
+  surah: number
 }
 
 export type LineContent = {
-  type: "content"
+  type: 'content'
   words: LineWord[]
   fontSize: number
+  sentence: string
 }
 
 export type LineDetails = LineHeader | LineBesmele | LineContent
@@ -38,4 +40,3 @@ export type SinglePageViewProps = {
 
 export const HeaderAspectRatio = 604 / 98
 export const ArabicLineAspectRatio = 604 / 51
-

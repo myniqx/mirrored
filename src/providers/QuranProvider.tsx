@@ -1,13 +1,19 @@
-"use client"
-import React, { type PropsWithChildren, createContext, useState, useEffect, CSSProperties } from "react"
-import { useLocalStorage } from "@/hooks/useLocalStorage"
-import type { AyahDetailsInArray } from "@/types/AyahDetails"
-import { arabic } from "../constants/quran/arapca"
-import endings from "../constants/quran/pageEndings.json"
-import surah_details from "../constants/quran/surahDetails.json"
-import turkish from "../constants/quran/turkishMeal.json"
-import { arabicFonts } from "@/components/Settings/arabicFonts"
-import { cn } from "@/lib/utils"
+'use client'
+import React, {
+  type PropsWithChildren,
+  createContext,
+  useState,
+  useEffect,
+  CSSProperties,
+} from 'react'
+import type { AyahDetailsInArray } from '@/types/AyahDetails'
+import { arabic } from '../constants/quran/arapca'
+import endings from '../constants/quran/pageEndings.json'
+import surah_details from '../constants/quran/surahDetails.json'
+import turkish from '../constants/quran/turkishMeal.json'
+import { arabicFonts } from '@/components/Settings/arabicFonts'
+import { cn } from '@/lib/utils'
+import { useLocalStorage } from '@uidotdev/usehooks'
 
 type BookmarkData = {
   id: number
@@ -32,16 +38,28 @@ interface QuranContextProps {
   setMealSlug: (id: string) => void
 }
 
-export const QuranContext = createContext<QuranContextProps>({} as QuranContextProps)
+export const QuranContext = createContext<QuranContextProps>(
+  {} as QuranContextProps,
+)
 
 type QuranProviderProps = PropsWithChildren
 
 export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
-  const [bookmarks, setBookmarks] = useLocalStorage<BookmarkData[]>("quranBookmarks", [])
-  const [mealSlug, setMealSlug] = useLocalStorage("meadSlug", '')
-  const [hoveredVerse, setHoveredVerse] = useState<[number, number] | null>(null)
-  const [selectedVerses, setSelectedVerses] = useState<Record<string, boolean>>({})
-  const [arabicFont, setArabicFont] = useLocalStorage("arabicFont", arabicFonts[0].name)
+  const [bookmarks, setBookmarks] = useLocalStorage<BookmarkData[]>(
+    'quranBookmarks',
+    [],
+  )
+  const [mealSlug, setMealSlug] = useLocalStorage('mealSlug', '')
+  const [hoveredVerse, setHoveredVerse] = useState<[number, number] | null>(
+    null,
+  )
+  const [selectedVerses, setSelectedVerses] = useState<Record<string, boolean>>(
+    {},
+  )
+  const [arabicFont, setArabicFont] = useLocalStorage(
+    'arabicFont',
+    arabicFonts[0].name,
+  )
 
   const hasLineEnding = (sure: number, ayet: number, wordIndex: number) => {
     const surah = endings[sure - 1]
@@ -58,14 +76,14 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
   }
 
   const setBookmark = (page: number, id?: number) => {
-    const bm = id ? bookmarks.find((b) => b.id === id) : undefined
+    const bm = id ? bookmarks.find((b: BookmarkData) => b.id === id) : undefined
     if (bm) {
       if (bm.page === page) {
         return
       }
       bm.page = page
       bm.last_seen = new Date().toISOString()
-      setBookmarks([bm, ...bookmarks.filter((b) => b.id !== id)])
+      setBookmarks([bm, ...bookmarks.filter((b: BookmarkData) => b.id !== id)])
     } else {
       setBookmarks([
         {
@@ -91,20 +109,17 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
 
   const isSelected = (surah: number, ayah: number) => {
     return selectedVerses[`${surah}-${ayah}`]
-      ? "bg-green-100 dark:bg-green-700"
-      : ""
+      ? 'bg-green-100 dark:bg-green-700'
+      : ''
   }
 
   const isHovered = (surah: number, ayah: number) =>
     hoveredVerse?.[0] === surah && hoveredVerse?.[1] === ayah
-      ? "bg-blue-300 dark:bg-gray-700"
-      : "";
+      ? 'bg-blue-300 dark:bg-gray-700'
+      : ''
 
   const getStyles = (sure: number, ayet: number) => {
-    return cn(
-      isHovered(sure, ayet),
-      isSelected(sure, ayet),
-    )
+    return cn(isHovered(sure, ayet), isSelected(sure, ayet))
   }
 
   useEffect(() => {
@@ -114,7 +129,7 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
         const fontFace = new FontFace(font.name, `url(${font.path})`)
         await fontFace.load()
         document.fonts.add(fontFace)
-        document.body.style.setProperty("--arabic-font", font.name)
+        document.body.style.setProperty('--arabic-font', font.name)
       }
     }
     loadFont()
@@ -136,7 +151,7 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
         arabicFont,
         setArabicFont,
         mealSlug,
-        setMealSlug
+        setMealSlug,
       }}
     >
       {children}
@@ -147,7 +162,9 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
 export const useQuranContext = () => React.useContext(QuranContext)
 
 export const getSurahDetails = (sure: number) => {
-  const [order, page, isMekki, name, totalAyahs] = surah_details[sure - 1] as AyahDetailsInArray
+  const [order, page, isMekki, name, totalAyahs] = surah_details[
+    sure - 1
+  ] as AyahDetailsInArray
   return {
     order,
     page,
@@ -161,4 +178,3 @@ export const getSurahDetails = (sure: number) => {
 export const hasBasmala = (sure: number) => {
   return sure !== 1 && sure !== 9
 }
-

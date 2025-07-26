@@ -1,17 +1,17 @@
-"use client"
+'use client'
 
-import { useChangeParams } from "@/hooks/useChangeParam"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search, X } from "lucide-react"
+import { useChangeParams } from '@/hooks/useChangeParam'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Search, X } from 'lucide-react'
 
 export const MainSearchBox = () => {
   const { getParams, changeParams } = useChangeParams()
-  const q = getParams("q")
+  const q = getParams('q')
 
   return (
     <div className="flex items-center relative w-full">
-      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+      <Search className="absolute left-3 top-1/2 w-6 h-6 transform -translate-y-1/2 text-muted-foreground" />
       <Input
         placeholder="Search"
         defaultValue={q}
@@ -31,4 +31,3 @@ export const MainSearchBox = () => {
     </div>
   )
 }
-

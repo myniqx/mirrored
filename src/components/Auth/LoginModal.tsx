@@ -1,19 +1,22 @@
-"use client"
-import { useState } from "react"
-import type React from "react"
+'use client'
+import { useState } from 'react'
+import type React from 'react'
 
-import { Modal } from "@/components/ui/modal"
-import { useAuth } from "@/hooks/useAuth"
-import { LoginForm } from "./LoginForm"
-import { ForgotPasswordForm } from "./ForgotPasswordForm"
-import { Avatar } from "@/components/ui/avatar"
+import { useAuth } from '@/hooks/useAuth'
+import { LoginForm } from './LoginForm'
+import { ForgotPasswordForm } from './ForgotPasswordForm'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Dialog } from '@/components/ui/dialog'
 
 interface LoginModalProps {
   isOpen: boolean
-  onClose: () => void
+  onOpenChange: (open: boolean) => void
 }
 
-export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+export const LoginModal: React.FC<LoginModalProps> = ({
+  isOpen,
+  onOpenChange,
+}) => {
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const { user } = useAuth()
 
@@ -26,10 +29,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       {user ? (
         <div className="flex items-center space-x-4">
-          <Avatar src={user.photoURL} alt={user.name} />
+          <Avatar>
+            <AvatarImage src={user.photoURL} alt={user.name} />
+            <AvatarFallback>{user.name?.charAt(0) || 'G'}</AvatarFallback>
+          </Avatar>
           <p>Welcome back, {user.name}!</p>
         </div>
       ) : showForgotPassword ? (
@@ -37,7 +43,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       ) : (
         <LoginForm onForgotPassword={handleForgotPassword} />
       )}
-    </Modal>
+    </Dialog>
   )
 }
-

@@ -1,8 +1,8 @@
-"use client"
-import { MainMenu } from "@/components/MainPage/MainMenu"
-import { MainSearchBox } from "@/components/MainPage/MainSearchBox"
-import Image from "next/image"
-import common from "../constants/common.json"
+'use client'
+import { MainMenu } from '@/components/MainPage/MainMenu'
+import { MainSearchBox } from '@/components/MainPage/MainSearchBox'
+import Image from 'next/image'
+import common from '../constants/common.json'
 
 const Home = () => {
   return (
@@ -19,7 +19,9 @@ const Home = () => {
         </div>
 
         <div className="absolute left-10 lg:left-1/2 top-10 bottom-10 right-10 gap-8 flex flex-col">
-          <h1 className="text-4xl md:text-5xl leading-[0.9em]">{common.appName}</h1>
+          <h1 className="text-4xl md:text-5xl leading-[0.9em]">
+            {common.appName}
+          </h1>
           <MainSearchBox />
           <MainMenu />
         </div>
@@ -29,4 +31,3 @@ const Home = () => {
 }
 
 export default Home
-

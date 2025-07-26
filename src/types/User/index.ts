@@ -2,7 +2,7 @@ export interface User {
   id: string
   name: string
   email: string
-  avatarUrl?: string
+  photoURL?: string
   bookmarks: Bookmark[]
 }
 
@@ -13,4 +13,3 @@ export interface Bookmark {
   lastReadAt: Date
   page: number
 }
-

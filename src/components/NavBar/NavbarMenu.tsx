@@ -1,19 +1,19 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useAuth } from "@/hooks/useAuth"
-import { AuthModal } from "@/components/Auth/AuthModal"
-import { FontSettings } from "@/components/Settings/FontSettings"
-import { ViewSettings } from "@/components/Settings/ViewSettings"
+} from '@/components/ui/dropdown-menu'
+import { useAuth } from '@/hooks/useAuth'
+import { AuthModal } from '@/components/Auth/AuthModal'
+import { FontSettings } from '@/components/Settings/FontSettings'
+import { ViewSettings } from '@/components/Settings/ViewSettings'
 
 export const NavbarMenu = () => {
   const { user, logout } = useAuth()
@@ -25,8 +25,8 @@ export const NavbarMenu = () => {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
-              <AvatarImage src={user?.avatarUrl} alt={user?.name} />
-              <AvatarFallback>{user?.name?.charAt(0) || "G"}</AvatarFallback>
+              <AvatarImage src={user?.photoURL} alt={user?.name} />
+              <AvatarFallback>{user?.name?.charAt(0) || 'G'}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
@@ -39,7 +39,9 @@ export const NavbarMenu = () => {
               <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </>
           ) : (
-            <DropdownMenuItem onSelect={() => setShowAuthModal(true)}>Login</DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setShowAuthModal(true)}>
+              Login
+            </DropdownMenuItem>
           )}
           <DropdownMenuSeparator />
           <DropdownMenuItem>
@@ -50,8 +52,10 @@ export const NavbarMenu = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </>
   )
 }
-
