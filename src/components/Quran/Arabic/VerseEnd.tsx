@@ -3,8 +3,9 @@ import { getArabicNumberWithShape } from '@/utils/arabicNumber'
 import { usePageLine } from './ArabicLine'
 import useMeasureElement from '@/hooks/useMeasureElement'
 import { useEffect, memo, useCallback, useMemo } from 'react'
-import { useSelectStore, useIsSelected } from '@/stores/selectStore'
-import { useIsHovered } from '@/stores/hoverStore'
+import { useSelectStore } from '@/stores/selectStore'
+import { useVerseHoverState } from '@/hooks/useVerseHoverState'
+import { useVerseSelectState } from '@/hooks/useVerseSelectState'
 import { getQuranStyles } from '@/lib/quranStyles'
 
 type VerseEndProps = {
@@ -16,8 +17,8 @@ export const VerseEnd: React.FC<VerseEndProps> = memo(
   ({ surah, ayah }) => {
     const { fontSize, setWordWidth } = usePageLine()
     const toggleSelected = useSelectStore((state) => state.toggleSelected)
-    const isHovered = useIsHovered(surah, ayah)
-    const isSelected = useIsSelected(surah, ayah)
+    const isHovered = useVerseHoverState(surah, ayah)
+    const isSelected = useVerseSelectState(surah, ayah)
     const [ref, { width }] = useMeasureElement<HTMLDivElement>()
 
     const styles = useMemo(

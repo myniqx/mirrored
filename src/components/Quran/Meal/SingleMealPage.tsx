@@ -12,8 +12,9 @@ import { getSurahDetails, useQuranContext } from '@/providers/QuranProvider'
 import { type FC, useEffect, useMemo, useState, useCallback, memo } from 'react'
 import type { SinglePageViewProps } from '../Arabic/types'
 import { useHoverStore } from '@/stores/hoverStore'
-import { useSelectStore, useIsSelected } from '@/stores/selectStore'
-import { useIsHovered } from '@/stores/hoverStore'
+import { useSelectStore } from '@/stores/selectStore'
+import { useVerseHoverState } from '@/hooks/useVerseHoverState'
+import { useVerseSelectState } from '@/hooks/useVerseSelectState'
 import { getQuranStyles } from '@/lib/quranStyles'
 
 import meals from '../../../constants/meal/meal.json'
@@ -31,8 +32,8 @@ const MealVerseCard = memo(
   }) => {
     const setHover = useHoverStore((state) => state.setHover)
     const toggleSelected = useSelectStore((state) => state.toggleSelected)
-    const isHovered = useIsHovered(verse.surah, verse.ayah)
-    const isSelected = useIsSelected(verse.surah, verse.ayah)
+    const isHovered = useVerseHoverState(verse.surah, verse.ayah)
+    const isSelected = useVerseSelectState(verse.surah, verse.ayah)
 
     const styles = useMemo(
       () => getQuranStyles(isHovered, isSelected),

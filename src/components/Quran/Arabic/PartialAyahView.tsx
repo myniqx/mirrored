@@ -2,8 +2,9 @@ import { FC, useMemo, memo, useCallback } from 'react'
 import { LineWord } from './types'
 import { VerseEnd } from './VerseEnd'
 import { WordView } from './WordView'
-import { useHoverStore, useIsHovered } from '@/stores/hoverStore'
-import { useIsSelected } from '@/stores/selectStore'
+import { useHoverStore } from '@/stores/hoverStore'
+import { useVerseHoverState } from '@/hooks/useVerseHoverState'
+import { useVerseSelectState } from '@/hooks/useVerseSelectState'
 import { getQuranStyles } from '@/lib/quranStyles'
 
 export type PartialAyahViewProps = {
@@ -14,10 +15,10 @@ export type PartialAyahViewProps = {
 
 export const PartialAyahView: FC<PartialAyahViewProps> = memo(
   ({ words, surah, ayah }) => {
-    // Use Zustand stores directly for better performance
+    // Event-based state: Only re-renders when THIS verse's state changes
     const setHover = useHoverStore((state) => state.setHover)
-    const isHovered = useIsHovered(surah, ayah)
-    const isSelected = useIsSelected(surah, ayah)
+    const isHovered = useVerseHoverState(surah, ayah)
+    const isSelected = useVerseSelectState(surah, ayah)
 
     const styles = useMemo(
       () => getQuranStyles(isHovered, isSelected),
