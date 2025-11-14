@@ -14,6 +14,7 @@ import {
   LucideArrowRightCircle,
   LucideEyeOff,
   LucideSearch,
+  LucideX,
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -58,8 +59,17 @@ const Navbar: React.FC<NavbarProps> = () => {
 
   // Handle search
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value)
-    // TODO: Implement search logic (will be done in next step)
+    const value = e.target.value
+    setSearchValue(value)
+
+    // Update URL param for search
+    changeParams({ q: value || undefined })
+  }
+
+  // Clear search
+  const handleClearSearch = () => {
+    setSearchValue('')
+    changeParams({ q: undefined })
   }
 
   return (
@@ -119,12 +129,25 @@ const Navbar: React.FC<NavbarProps> = () => {
         {/* Right section: Actions */}
         <div className="flex items-center gap-2 flex-shrink-0">
           {showSearch && (
-            <Input
-              value={searchValue}
-              onChange={handleSearchChange}
-              placeholder={page > 0 ? "Bu sayfada ara..." : "Ara..."}
-              className="w-48 mx-1.5"
-            />
+            <div className="relative">
+              <Input
+                value={searchValue}
+                onChange={handleSearchChange}
+                placeholder={page > 0 ? "Bu sayfada ara..." : "Sure, cüz ara..."}
+                className="w-48 pr-8"
+                autoFocus
+              />
+              {searchValue && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full w-8"
+                  onClick={handleClearSearch}
+                >
+                  <LucideX className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           )}
           <Button
             variant="ghost"
