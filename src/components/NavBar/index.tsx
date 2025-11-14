@@ -21,6 +21,7 @@ import { useState, useEffect } from 'react'
 import { NavbarMenu } from './NavbarMenu'
 import { BookmarkDialog } from './BookmarkDialog'
 import { QuickJumpDialog } from './QuickJumpDialog'
+import { BookmarkManager } from './BookmarkManager'
 import { getPageInfo } from '@/utils/pageInfo'
 
 interface NavbarProps {
@@ -135,6 +136,7 @@ const Navbar: React.FC<NavbarProps> = () => {
           </Button>
 
           <BookmarkDialog currentPage={page} />
+          <BookmarkManager />
           <QuickJumpDialog />
 
           <ModeToggle />
