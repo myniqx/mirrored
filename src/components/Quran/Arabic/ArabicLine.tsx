@@ -35,13 +35,17 @@ export const ArabicLine: React.FC<ArabicLineProps> = ({
   const { debug } = useLayoutContext()
   const [widths, setWidths] = React.useState<Record<string, number>>({})
 
+  // Batch state updates for performance (collects all width changes and applies them in one render)
+  const pendingWidthsRef = React.useRef<Record<string, number>>({})
+  const updateTimeoutRef = React.useRef<NodeJS.Timeout | undefined>(undefined)
+
   const space = useMemo(() => {
     const values = Object.values(widths)
     if (values.some((v) => !v)) return 0
 
     const total = values.reduce((a, b) => a + b, 0)
     return (width - total) / (values.length - 1)
-  }, [widths])
+  }, [widths, width])
 
   const groupedWords = useMemo(() => {
     const groups: PartialAyahViewProps[] = []
@@ -84,20 +88,32 @@ export const ArabicLine: React.FC<ArabicLineProps> = ({
     }
 
     return groups
-  }, [width, fontSize, space, words])
+  }, [space, words])
 
-  const setWordWidth = (
-    surah: number,
-    ayah: number,
-    wordIndex: number,
-    width: number,
-  ) => {
-    const key = `${surah}.${ayah}.${wordIndex}`
-    const oldWidth = widths[key]
-    if (oldWidth !== width) {
-      setWidths((prev) => ({ ...prev, [key]: width }))
+  const setWordWidth = React.useCallback(
+    (surah: number, ayah: number, wordIndex: number, width: number) => {
+      const key = `${surah}.${ayah}.${wordIndex}`
+      pendingWidthsRef.current[key] = width
+
+      // Debounce: batch all updates within 16ms (one frame at 60fps)
+      if (updateTimeoutRef.current) clearTimeout(updateTimeoutRef.current)
+      updateTimeoutRef.current = setTimeout(() => {
+        setWidths((prev) => {
+          const next = { ...prev, ...pendingWidthsRef.current }
+          pendingWidthsRef.current = {}
+          return next
+        })
+      }, 16)
+    },
+    [],
+  )
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (updateTimeoutRef.current) clearTimeout(updateTimeoutRef.current)
     }
-  }
+  }, [])
 
   return (
     <LineContext.Provider value={{ fontSize, setWordWidth }}>
