@@ -2,7 +2,9 @@ import { FC, useMemo, memo, useCallback } from 'react'
 import { LineWord } from './types'
 import { VerseEnd } from './VerseEnd'
 import { WordView } from './WordView'
-import { useQuranContext } from '@/providers/QuranProvider'
+import { useHoverStore, useIsHovered } from '@/stores/hoverStore'
+import { useIsSelected } from '@/stores/selectStore'
+import { getQuranStyles } from '@/lib/quranStyles'
 
 export type PartialAyahViewProps = {
   words: (LineWord | number)[]
@@ -12,9 +14,15 @@ export type PartialAyahViewProps = {
 
 export const PartialAyahView: FC<PartialAyahViewProps> = memo(
   ({ words, surah, ayah }) => {
-    const { getStyles, setHover } = useQuranContext()
+    // Use Zustand stores directly for better performance
+    const setHover = useHoverStore((state) => state.setHover)
+    const isHovered = useIsHovered(surah, ayah)
+    const isSelected = useIsSelected(surah, ayah)
 
-    const styles = getStyles(surah, ayah)
+    const styles = useMemo(
+      () => getQuranStyles(isHovered, isSelected),
+      [isHovered, isSelected],
+    )
 
     const hidden = words.some((w) => w === 0)
 

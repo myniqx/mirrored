@@ -1,9 +1,11 @@
 import type React from 'react'
 import { getArabicNumberWithShape } from '@/utils/arabicNumber'
 import { usePageLine } from './ArabicLine'
-import { useQuranContext } from '@/providers/QuranProvider'
 import useMeasureElement from '@/hooks/useMeasureElement'
-import { useEffect, memo, useCallback } from 'react'
+import { useEffect, memo, useCallback, useMemo } from 'react'
+import { useSelectStore, useIsSelected } from '@/stores/selectStore'
+import { useIsHovered } from '@/stores/hoverStore'
+import { getQuranStyles } from '@/lib/quranStyles'
 
 type VerseEndProps = {
   surah: number
@@ -13,8 +15,15 @@ type VerseEndProps = {
 export const VerseEnd: React.FC<VerseEndProps> = memo(
   ({ surah, ayah }) => {
     const { fontSize, setWordWidth } = usePageLine()
-    const { getStyles, toggleSelected } = useQuranContext()
+    const toggleSelected = useSelectStore((state) => state.toggleSelected)
+    const isHovered = useIsHovered(surah, ayah)
+    const isSelected = useIsSelected(surah, ayah)
     const [ref, { width }] = useMeasureElement<HTMLDivElement>()
+
+    const styles = useMemo(
+      () => getQuranStyles(isHovered, isSelected),
+      [isHovered, isSelected],
+    )
 
     useEffect(() => {
       setWordWidth(surah, ayah, -1, width)
@@ -27,7 +36,7 @@ export const VerseEnd: React.FC<VerseEndProps> = memo(
 
     return (
       <div
-        className={`relative flex flex-col flex-shrink-0 ${getStyles(surah, ayah)} `}
+        className={`relative flex flex-col flex-shrink-0 ${styles} `}
         onClick={handleClick}
       >
         <p

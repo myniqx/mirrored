@@ -2,9 +2,9 @@
 import React, {
   type PropsWithChildren,
   createContext,
-  useState,
   useEffect,
-  CSSProperties,
+  useMemo,
+  useCallback,
 } from 'react'
 import type { AyahDetailsInArray } from '@/types/AyahDetails'
 import { arabic } from '../constants/quran/arapca'
@@ -12,8 +12,10 @@ import endings from '../constants/quran/pageEndings.json'
 import surah_details from '../constants/quran/surahDetails.json'
 import turkish from '../constants/quran/turkishMeal.json'
 import { arabicFonts } from '@/components/Settings/arabicFonts'
-import { cn } from '@/lib/utils'
 import { useLocalStorage } from '@uidotdev/usehooks'
+import { useHoverStore } from '@/stores/hoverStore'
+import { useSelectStore } from '@/stores/selectStore'
+import { getQuranStyles } from '@/lib/quranStyles'
 
 type BookmarkData = {
   id: number
@@ -26,10 +28,15 @@ interface QuranContextProps {
   getArabic: (sure: number, ayet: number) => string[]
   getTurkish: (sure: number, ayet: number) => string[]
   setBookmark: (page: number, id?: number) => void
+  /** @deprecated Use useHoverStore from '@/stores/hoverStore' instead */
   setHover: (surah: number, ayah: number, value: boolean) => void
+  /** @deprecated Use useSelectStore from '@/stores/selectStore' instead */
   toggleSelected: (surah: number, ayah: number) => void
+  /** @deprecated Use useIsSelected from '@/stores/selectStore' instead */
   isSelected: (surah: number, ayah: number) => string
+  /** @deprecated Use useIsHovered from '@/stores/hoverStore' instead */
   isHovered: (surah: number, ayah: number) => string
+  /** @deprecated Use getQuranStyles from '@/lib/quranStyles' instead */
   getStyles: (surah: number, ayah: number) => string
   bookmarks: BookmarkData[]
   arabicFont: string
@@ -50,77 +57,103 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
     [],
   )
   const [mealSlug, setMealSlug] = useLocalStorage('mealSlug', '')
-  const [hoveredVerse, setHoveredVerse] = useState<[number, number] | null>(
-    null,
-  )
-  const [selectedVerses, setSelectedVerses] = useState<Record<string, boolean>>(
-    {},
-  )
   const [arabicFont, setArabicFont] = useLocalStorage(
     'arabicFont',
     arabicFonts[0].name,
   )
 
-  const hasLineEnding = (sure: number, ayet: number, wordIndex: number) => {
-    const surah = endings[sure - 1]
-    const list = surah?.[ayet.toString() as keyof typeof surah]
-    return list?.includes(wordIndex) ?? false
-  }
+  // Get Zustand store actions (backward compatibility)
+  const setHoverAction = useHoverStore((state) => state.setHover)
+  const toggleSelectedAction = useSelectStore((state) => state.toggleSelected)
+  const hoveredVerse = useHoverStore((state) => state.hoveredVerse)
+  const selectedVerses = useSelectStore((state) => state.selectedVerses)
 
-  const getArabic = (sure: number, ayet: number) => {
+  const hasLineEnding = useCallback(
+    (sure: number, ayet: number, wordIndex: number) => {
+      const surah = endings[sure - 1]
+      const list = surah?.[ayet.toString() as keyof typeof surah]
+      return list?.includes(wordIndex) ?? false
+    },
+    [],
+  )
+
+  const getArabic = useCallback((sure: number, ayet: number) => {
     return arabic[sure - 1][ayet - 1]
-  }
+  }, [])
 
-  const getTurkish = (sure: number, ayet: number) => {
+  const getTurkish = useCallback((sure: number, ayet: number) => {
     return turkish[sure - 1][ayet - 1]
-  }
+  }, [])
 
-  const setBookmark = (page: number, id?: number) => {
-    const bm = id ? bookmarks.find((b: BookmarkData) => b.id === id) : undefined
-    if (bm) {
-      if (bm.page === page) {
-        return
+  const setBookmark = useCallback(
+    (page: number, id?: number) => {
+      const bm = id
+        ? bookmarks.find((b: BookmarkData) => b.id === id)
+        : undefined
+      if (bm) {
+        if (bm.page === page) {
+          return
+        }
+        bm.page = page
+        bm.last_seen = new Date().toISOString()
+        setBookmarks([
+          bm,
+          ...bookmarks.filter((b: BookmarkData) => b.id !== id),
+        ])
+      } else {
+        setBookmarks([
+          {
+            id: id ?? Date.now(),
+            page,
+            last_seen: new Date().toISOString(),
+          },
+          ...bookmarks,
+        ])
       }
-      bm.page = page
-      bm.last_seen = new Date().toISOString()
-      setBookmarks([bm, ...bookmarks.filter((b: BookmarkData) => b.id !== id)])
-    } else {
-      setBookmarks([
-        {
-          id: id ?? Date.now(),
-          page,
-          last_seen: new Date().toISOString(),
-        },
-        ...bookmarks,
-      ])
-    }
-  }
+    },
+    [bookmarks, setBookmarks],
+  )
 
-  const setHover = (surah: number, ayah: number, value: boolean) => {
-    setHoveredVerse(value ? [surah, ayah] : null)
-  }
+  // Backward compatibility wrappers (deprecated - use stores directly)
+  const setHover = useCallback(
+    (surah: number, ayah: number, value: boolean) => {
+      setHoverAction(surah, ayah, value)
+    },
+    [setHoverAction],
+  )
 
-  const toggleSelected = (surah: number, ayah: number) => {
-    setSelectedVerses((prev) => ({
-      ...prev,
-      [`${surah}-${ayah}`]: !prev[`${surah}-${ayah}`],
-    }))
-  }
+  const toggleSelected = useCallback(
+    (surah: number, ayah: number) => {
+      toggleSelectedAction(surah, ayah)
+    },
+    [toggleSelectedAction],
+  )
 
-  const isSelected = (surah: number, ayah: number) => {
-    return selectedVerses[`${surah}-${ayah}`]
-      ? 'bg-green-100 dark:bg-green-700'
-      : ''
-  }
+  const isSelected = useCallback(
+    (surah: number, ayah: number) => {
+      return selectedVerses[`${surah}-${ayah}`]
+        ? 'bg-green-100 dark:bg-green-700'
+        : ''
+    },
+    [selectedVerses],
+  )
 
-  const isHovered = (surah: number, ayah: number) =>
-    hoveredVerse?.[0] === surah && hoveredVerse?.[1] === ayah
-      ? 'bg-blue-300 dark:bg-gray-700'
-      : ''
+  const isHovered = useCallback(
+    (surah: number, ayah: number) =>
+      hoveredVerse?.[0] === surah && hoveredVerse?.[1] === ayah
+        ? 'bg-blue-300 dark:bg-gray-700'
+        : '',
+    [hoveredVerse],
+  )
 
-  const getStyles = (sure: number, ayet: number) => {
-    return cn(isHovered(sure, ayet), isSelected(sure, ayet))
-  }
+  const getStyles = useCallback(
+    (sure: number, ayet: number) => {
+      const hovered = hoveredVerse?.[0] === sure && hoveredVerse?.[1] === ayet
+      const selected = selectedVerses[`${sure}-${ayet}`] ?? false
+      return getQuranStyles(hovered, selected)
+    },
+    [hoveredVerse, selectedVerses],
+  )
 
   useEffect(() => {
     const loadFont = async () => {
@@ -135,25 +168,44 @@ export const QuranProvider: React.FC<QuranProviderProps> = ({ children }) => {
     loadFont()
   }, [arabicFont])
 
+  // Memoize context value to prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({
+      hasLineEnding,
+      getArabic,
+      getTurkish,
+      getStyles,
+      setBookmark,
+      bookmarks,
+      toggleSelected,
+      setHover,
+      isSelected,
+      isHovered,
+      arabicFont,
+      setArabicFont,
+      mealSlug,
+      setMealSlug,
+    }),
+    [
+      hasLineEnding,
+      getArabic,
+      getTurkish,
+      getStyles,
+      setBookmark,
+      bookmarks,
+      toggleSelected,
+      setHover,
+      isSelected,
+      isHovered,
+      arabicFont,
+      setArabicFont,
+      mealSlug,
+      setMealSlug,
+    ],
+  )
+
   return (
-    <QuranContext.Provider
-      value={{
-        hasLineEnding,
-        getArabic,
-        getTurkish,
-        getStyles,
-        setBookmark,
-        bookmarks,
-        toggleSelected,
-        setHover,
-        isSelected,
-        isHovered,
-        arabicFont,
-        setArabicFont,
-        mealSlug,
-        setMealSlug,
-      }}
-    >
+    <QuranContext.Provider value={contextValue}>
       {children}
     </QuranContext.Provider>
   )
