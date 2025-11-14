@@ -1,14 +1,17 @@
 export const arabicFonts = [
   {
-    name: 'Scheherazade',
-    displayName: 'Scheherazade',
-    path: '/fonts/Scheherazade-Regular.ttf',
+    name: 'Hamdullah Mushaf',
+    displayName: 'Hamdullah Mushaf (Default)',
+    path: '/fonts/ShaikhHamdullahMushaf.ttf',
   },
-  { name: 'Amiri', displayName: 'Amiri', path: '/fonts/Amiri-Regular.ttf' },
-  { name: 'Lateef', displayName: 'Lateef', path: '/fonts/Lateef-Regular.ttf' },
   {
-    name: 'Noto Naskh Arabic',
-    displayName: 'Noto Naskh',
-    path: '/fonts/NotoNaskhArabic-Regular.ttf',
+    name: 'Hafs',
+    displayName: 'Hafs',
+    path: '/fonts/Hafs.ttf',
+  },
+  {
+    name: 'Encode Sans',
+    displayName: 'Encode Sans',
+    path: '/fonts/EncodeSansExpanded-Regular.ttf',
   },
 ]

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { ModeToggle } from '@/components/ui/mode-toggle'
 import { useChangeParams } from '@/hooks/useChangeParam'
 import { useLayoutContext } from '@/providers/LayoutProvider'
+import { useQuranContext } from '@/providers/QuranProvider'
 import {
   LucideArrowLeft,
   LucideArrowLeftCircle,
@@ -15,8 +16,12 @@ import {
   LucideSearch,
 } from 'lucide-react'
 import Image from 'next/image'
-import { useState } from 'react'
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
 import { NavbarMenu } from './NavbarMenu'
+import { BookmarkDialog } from './BookmarkDialog'
+import { QuickJumpDialog } from './QuickJumpDialog'
+import { getPageInfo } from '@/utils/pageInfo'
 
 interface NavbarProps {
   webName: string
@@ -29,72 +34,130 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = () => {
   const { setVisibleHeader, headerContent, searchText } = useLayoutContext()
   const { getParams, changeParams } = useChangeParams()
+  const { setBookmark } = useQuranContext()
   const page = +getParams<number>('page', 0)
   const prevPage = Math.max(page - 1, 0)
   const nextPage = Math.min(page + 1, 604)
   const [showSearch, setShowSearch] = useState(false)
+  const [searchValue, setSearchValue] = useState(searchText ?? '')
+
+  // Get page info (surah, juz)
+  const pageInfo = getPageInfo(page)
+
+  // Sync search value with context
+  useEffect(() => {
+    setSearchValue(searchText ?? '')
+  }, [searchText])
+
+  // Handle back button: Save current page as default bookmark
+  const handleBack = () => {
+    setBookmark(page, 1) // id=1 for default bookmark
+    changeParams({ page: 0 }) // Go to home/main page
+  }
+
+  // Handle search
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value)
+    // TODO: Implement search logic (will be done in next step)
+  }
 
   return (
-    <div className="flex items-center justify-between py-4 px-6 absolute left-0 right-0 top-0 h-14 bg-gray-100 dark:bg-gray-800 shadow-md">
-      {/* Left section: Logo, back button, and header content */}
-      <div className="flex items-center flex-grow-0 flex-shrink-1">
-        <Image width={32} height={32} alt="Mirrored Logo" src="/icon.png" />
-        <Button variant="ghost" size="icon">
-          <LucideArrowLeft />
-        </Button>
-        <div className="hidden md:block">{headerContent}</div>
-      </div>
+    <>
+      {/* Main Header */}
+      <div className="flex items-center justify-between py-2 px-6 absolute left-0 right-0 top-0 h-16 bg-gray-100 dark:bg-gray-800 shadow-md z-50">
+        {/* Left section: Logo and back button */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <Link href="/?page=0" className="flex items-center">
+            <Image
+              width={32}
+              height={32}
+              alt="Mirrored Logo"
+              src="/icon.png"
+              className="cursor-pointer"
+            />
+          </Link>
+          <Button variant="ghost" size="icon" onClick={handleBack} title="Ana sayfaya dön ve yer imi kaydet">
+            <LucideArrowLeft />
+          </Button>
+          <div className="hidden md:block">{headerContent}</div>
+        </div>
 
-      {/* Center section: Page navigation */}
-      <div className="flex-grow flex-1 flex items-center justify-center text-center">
-        <div className="flex items-center gap-4 justify-center">
+        {/* Center section: Page navigation with info */}
+        <div className="flex-grow flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={prevPage === page}
+              onClick={() => changeParams({ page: prevPage })}
+              title="Önceki sayfa"
+            >
+              <LucideArrowLeftCircle />
+            </Button>
+
+            {/* Page info */}
+            <div className="flex flex-col items-center min-w-[140px]">
+              <div className="text-sm text-muted-foreground whitespace-nowrap">
+                {pageInfo.surahName} • Cüz {pageInfo.juz}
+              </div>
+              <div className="font-semibold text-lg">Sayfa {page}</div>
+            </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={nextPage === page}
+              onClick={() => changeParams({ page: nextPage })}
+              title="Sonraki sayfa"
+            >
+              <LucideArrowRightCircle />
+            </Button>
+          </div>
+        </div>
+
+        {/* Right section: Actions */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {showSearch && (
+            <Input
+              value={searchValue}
+              onChange={handleSearchChange}
+              placeholder={page > 0 ? "Bu sayfada ara..." : "Ara..."}
+              className="w-48 mx-1.5"
+            />
+          )}
           <Button
             variant="ghost"
             size="icon"
-            disabled={prevPage === page}
-            onClick={() => changeParams({ page: prevPage })}
+            onClick={() => setShowSearch(!showSearch)}
+            title="Ara"
           >
-            <LucideArrowLeftCircle />
+            <LucideSearch />
           </Button>
-          <span>{page}</span>
+
+          <BookmarkDialog currentPage={page} />
+          <QuickJumpDialog />
+
+          <ModeToggle />
           <Button
             variant="ghost"
             size="icon"
-            disabled={nextPage === page}
-            onClick={() => changeParams({ page: nextPage })}
+            onClick={() => setVisibleHeader(false)}
+            title="Header'ı gizle"
           >
-            <LucideArrowRightCircle />
+            <LucideEyeOff />
           </Button>
+          <NavbarMenu />
         </div>
       </div>
 
-      {/* Right section: Search, theme toggle, and menu */}
-      <div className="flex items-center gap-2">
-        {showSearch && (
-          <Input
-            value={searchText ?? ''}
-            placeholder="Type some names"
-            className="mx-1.5"
-          />
-        )}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setShowSearch(!showSearch)}
-        >
-          <LucideSearch />
-        </Button>
-        <ModeToggle />
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setVisibleHeader(false)}
-        >
-          <LucideEyeOff />
-        </Button>
-        <NavbarMenu />
+      {/* Progress Bar */}
+      <div className="absolute left-0 right-0 top-16 h-1 bg-gray-200 dark:bg-gray-700 z-40">
+        <div
+          className="h-full bg-primary transition-all duration-300"
+          style={{ width: `${(page / 604) * 100}%` }}
+        />
       </div>
-    </div>
+    </>
   )
 }
 
