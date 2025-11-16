@@ -87,7 +87,12 @@ const Navbar: React.FC<NavbarProps> = () => {
               className="cursor-pointer"
             />
           </Link>
-          <Button variant="ghost" size="icon" onClick={handleBack} title="Ana sayfaya dön ve yer imi kaydet">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleBack}
+            title="Ana sayfaya dön ve yer imi kaydet"
+          >
             <LucideArrowLeft />
           </Button>
           <div className="hidden md:block">{headerContent}</div>
@@ -133,7 +138,9 @@ const Navbar: React.FC<NavbarProps> = () => {
               <Input
                 value={searchValue}
                 onChange={handleSearchChange}
-                placeholder={page > 0 ? "Bu sayfada ara..." : "Sure, cüz ara..."}
+                placeholder={
+                  page > 0 ? 'Bu sayfada ara...' : 'Sure, cüz ara...'
+                }
                 className="w-48 pr-8"
                 autoFocus
               />

@@ -43,9 +43,7 @@ export const BookmarkDialog: React.FC<BookmarkDialogProps> = ({
           size="icon"
           title="Yer imi ekle"
         >
-          <LucideBookmark
-            className={existingBookmark ? 'fill-current' : ''}
-          />
+          <LucideBookmark className={existingBookmark ? 'fill-current' : ''} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">

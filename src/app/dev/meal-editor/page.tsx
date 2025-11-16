@@ -15,7 +15,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MarkdownRenderer } from '@/components/MealEditor/MarkdownRenderer'
-import { convertMealText, previewConversion, type VerseData } from '@/utils/mealConverter'
+import {
+  convertMealText,
+  previewConversion,
+  type VerseData,
+} from '@/utils/mealConverter'
 import meals from '@/constants/meal/meal.json'
 import pageContents from '@/constants/quran/pageContents.json'
 import { getSurahDetails } from '@/providers/QuranProvider'
@@ -46,13 +50,17 @@ export default function MealEditorPage() {
   // State
   const [selectedMeal, setSelectedMeal] = useState(meals[0]?.id || '')
   const [selectedPage, setSelectedPage] = useState(1)
-  const [selectedVerse, setSelectedVerse] = useState<[number, number] | null>(null)
+  const [selectedVerse, setSelectedVerse] = useState<[number, number] | null>(
+    null,
+  )
 
   const [textValue, setTextValue] = useState('')
   const [subtextValue, setSubtextValue] = useState('')
   const [originalData, setOriginalData] = useState<VerseData | null>(null)
   const [isSaving, setIsSaving] = useState(false)
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>(
+    'idle',
+  )
 
   // Bulk conversion state
   const [isConverting, setIsConverting] = useState(false)
@@ -250,7 +258,8 @@ export default function MealEditorPage() {
   // Check if modified
   const isModified =
     originalData &&
-    (textValue !== originalData.text || subtextValue !== (originalData.subtext || ''))
+    (textValue !== originalData.text ||
+      subtextValue !== (originalData.subtext || ''))
 
   return (
     <div className="h-screen flex flex-col">
@@ -259,7 +268,9 @@ export default function MealEditorPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Meal Editör</h1>
-            <p className="text-sm opacity-90">Development Tool - Meal JSON Editor</p>
+            <p className="text-sm opacity-90">
+              Development Tool - Meal JSON Editor
+            </p>
           </div>
           <Badge variant="destructive" className="text-lg px-4 py-2">
             DEV ONLY
@@ -329,8 +340,10 @@ export default function MealEditorPage() {
                     Sayfa {selectedPage} - Toplu Dönüştürme
                   </DialogTitle>
                   <DialogDescription>
-                    Bu sayfadaki tüm ayetler ({pageVerses.filter((v) => v[1] !== 0).length} adet)
-                    dönüştürülecek. HTML → Markdown, Allah/Peygamber isimleri formatlanacak.
+                    Bu sayfadaki tüm ayetler (
+                    {pageVerses.filter((v) => v[1] !== 0).length} adet)
+                    dönüştürülecek. HTML → Markdown, Allah/Peygamber isimleri
+                    formatlanacak.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
@@ -339,7 +352,8 @@ export default function MealEditorPage() {
                     <div className="text-sm">
                       <p className="font-semibold">Önce önizleme yapın!</p>
                       <p className="text-muted-foreground mt-1">
-                        Değişiklikleri görmek için önce &quot;Önizle&quot; butonuna tıklayın.
+                        Değişiklikleri görmek için önce &quot;Önizle&quot;
+                        butonuna tıklayın.
                       </p>
                     </div>
                   </div>
@@ -349,7 +363,8 @@ export default function MealEditorPage() {
                         <strong>Toplam:</strong> {convertStats.totalVerses}
                       </p>
                       <p>
-                        <strong>Dönüştürülecek:</strong> {convertStats.convertedVerses}
+                        <strong>Dönüştürülecek:</strong>{' '}
+                        {convertStats.convertedVerses}
                       </p>
                       <p>
                         <strong>Atlanacak:</strong> {convertStats.skippedVerses}
@@ -366,7 +381,10 @@ export default function MealEditorPage() {
                     Önizle
                   </Button>
                   <DialogClose asChild>
-                    <Button onClick={() => handleBulkConvert('page', false)} disabled={isConverting}>
+                    <Button
+                      onClick={() => handleBulkConvert('page', false)}
+                      disabled={isConverting}
+                    >
                       {isConverting ? 'Dönüştürülüyor...' : 'Dönüştür'}
                     </Button>
                   </DialogClose>
@@ -389,20 +407,25 @@ export default function MealEditorPage() {
                   </DialogTitle>
                   <DialogDescription>
                     <strong className="text-red-600">
-                      DİKKAT: Bu işlem {selectedMeal} meal&apos;inin TÜM ayetlerini dönüştürecek!
+                      DİKKAT: Bu işlem {selectedMeal} meal&apos;inin TÜM
+                      ayetlerini dönüştürecek!
                     </strong>
                     <br />
                     <br />
-                    Otomatik yedekleme oluşturulacak, ancak bu işlem geri alınamaz.
+                    Otomatik yedekleme oluşturulacak, ancak bu işlem geri
+                    alınamaz.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                   <div className="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
                     <LucideAlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400 mt-0.5" />
                     <div className="text-sm">
-                      <p className="font-semibold text-red-600">Önce mutlaka önizleme yapın!</p>
+                      <p className="font-semibold text-red-600">
+                        Önce mutlaka önizleme yapın!
+                      </p>
                       <p className="text-muted-foreground mt-1">
-                        Birkaç sayfa üzerinde test edin, sonra tümünü dönüştürün.
+                        Birkaç sayfa üzerinde test edin, sonra tümünü
+                        dönüştürün.
                       </p>
                     </div>
                   </div>
@@ -412,7 +435,8 @@ export default function MealEditorPage() {
                         <strong>Toplam:</strong> {convertStats.totalVerses}
                       </p>
                       <p>
-                        <strong>Dönüştürülecek:</strong> {convertStats.convertedVerses}
+                        <strong>Dönüştürülecek:</strong>{' '}
+                        {convertStats.convertedVerses}
                       </p>
                       <p>
                         <strong>Atlanacak:</strong> {convertStats.skippedVerses}
@@ -450,7 +474,8 @@ export default function MealEditorPage() {
         <div className="w-80 border-r overflow-y-auto bg-gray-50 dark:bg-gray-900">
           <div className="p-4 space-y-2">
             <h3 className="font-semibold mb-4">
-              Sayfa {selectedPage} Ayetleri ({pageVerses.filter((v) => v[1] !== 0).length})
+              Sayfa {selectedPage} Ayetleri (
+              {pageVerses.filter((v) => v[1] !== 0).length})
             </h3>
             {pageVerses.map(([surah, ayah], index) => {
               if (ayah === 0) return null // Skip surah headers
@@ -497,7 +522,8 @@ export default function MealEditorPage() {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span>
-                      {getSurahDetails(selectedVerse[0]).name} - Ayet {selectedVerse[1]}
+                      {getSurahDetails(selectedVerse[0]).name} - Ayet{' '}
+                      {selectedVerse[1]}
                     </span>
                     <div className="flex gap-2">
                       <Button
@@ -506,7 +532,9 @@ export default function MealEditorPage() {
                         onClick={goToPrevVerse}
                         disabled={
                           pageVerses.findIndex(
-                            (v) => v[0] === selectedVerse[0] && v[1] === selectedVerse[1],
+                            (v) =>
+                              v[0] === selectedVerse[0] &&
+                              v[1] === selectedVerse[1],
                           ) === 0
                         }
                       >
@@ -519,7 +547,9 @@ export default function MealEditorPage() {
                         onClick={goToNextVerse}
                         disabled={
                           pageVerses.findIndex(
-                            (v) => v[0] === selectedVerse[0] && v[1] === selectedVerse[1],
+                            (v) =>
+                              v[0] === selectedVerse[0] &&
+                              v[1] === selectedVerse[1],
                           ) ===
                           pageVerses.length - 1
                         }
@@ -556,7 +586,9 @@ export default function MealEditorPage() {
                     placeholder="Ayet metni..."
                   />
                   <div>
-                    <Label className="text-xs text-muted-foreground">Preview:</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      Preview:
+                    </Label>
                     <div className="mt-2 p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
                       <MarkdownRenderer className="text-sm">
                         {textValue}
@@ -591,7 +623,9 @@ export default function MealEditorPage() {
                   />
                   {subtextValue && (
                     <div>
-                      <Label className="text-xs text-muted-foreground">Preview:</Label>
+                      <Label className="text-xs text-muted-foreground">
+                        Preview:
+                      </Label>
                       <div className="mt-2 p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
                         <MarkdownRenderer className="text-sm text-muted-foreground">
                           {subtextValue}

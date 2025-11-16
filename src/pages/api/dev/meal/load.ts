@@ -1,11 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type LoadResponse = {
-  text: string
-  subtext?: string | null
-} | {
-  error?: string
-}
+type LoadResponse =
+  | {
+      text: string
+      subtext?: string | null
+    }
+  | {
+      error?: string
+    }
 
 /**
  * DEV ONLY: Load specific verse from meal

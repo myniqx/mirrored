@@ -11,7 +11,11 @@ type SelectState = {
   selectedVerses: Record<string, boolean>
   toggleSelected: (surah: number, ayah: number) => void
   clearSelected: () => void
-  subscribeToVerse: (surah: number, ayah: number, callback: Listener) => () => void
+  subscribeToVerse: (
+    surah: number,
+    ayah: number,
+    callback: Listener,
+  ) => () => void
 }
 
 export const useSelectStore = create<SelectState>()(

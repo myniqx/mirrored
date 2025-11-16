@@ -12,7 +12,7 @@ const ALLAH_NAMES = [
   'Malik',
   'Kuddüs',
   'Selam',
-  'Mü\'min',
+  "Mü'min",
   'Müheymin',
   'Aziz',
   'Cebbar',
@@ -30,7 +30,7 @@ const ALLAH_NAMES = [
   'Basıt',
   'Hafız',
   'Rafi',
-  'Mu\'izz',
+  "Mu'izz",
   'Müzill',
   'Semi',
   'Basir',
@@ -90,8 +90,8 @@ const ALLAH_NAMES = [
   'Müntakim',
   'Afüvv',
   'Rauf',
-  'Malikü\'l-Mülk',
-  'Zü\'l-Celali ve\'l-İkram',
+  "Malikü'l-Mülk",
+  "Zü'l-Celali ve'l-İkram",
   'Muksıt',
   'Cami',
   'Ganiyy',
@@ -153,28 +153,30 @@ const PROPHET_NAMES = [
 export function htmlToMarkdown(html: string): string {
   if (!html) return ''
 
-  return html
-    // Bold tags
-    .replace(/<b>(.*?)<\/b>/gi, '**$1**')
-    .replace(/<strong>(.*?)<\/strong>/gi, '**$1**')
-    // Italic tags
-    .replace(/<i>(.*?)<\/i>/gi, '*$1*')
-    .replace(/<em>(.*?)<\/em>/gi, '*$1*')
-    // Underline (markdown doesn't support, use bold)
-    .replace(/<u>(.*?)<\/u>/gi, '__$1__')
-    // Line breaks
-    .replace(/<br\s*\/?>/gi, '\n')
-    // Paragraphs
-    .replace(/<p>(.*?)<\/p>/gi, '$1\n\n')
-    // Remove other HTML tags
-    .replace(/<[^>]+>/g, '')
-    // Decode HTML entities
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+  return (
+    html
+      // Bold tags
+      .replace(/<b>(.*?)<\/b>/gi, '**$1**')
+      .replace(/<strong>(.*?)<\/strong>/gi, '**$1**')
+      // Italic tags
+      .replace(/<i>(.*?)<\/i>/gi, '*$1*')
+      .replace(/<em>(.*?)<\/em>/gi, '*$1*')
+      // Underline (markdown doesn't support, use bold)
+      .replace(/<u>(.*?)<\/u>/gi, '__$1__')
+      // Line breaks
+      .replace(/<br\s*\/?>/gi, '\n')
+      // Paragraphs
+      .replace(/<p>(.*?)<\/p>/gi, '$1\n\n')
+      // Remove other HTML tags
+      .replace(/<[^>]+>/g, '')
+      // Decode HTML entities
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+  )
 }
 
 /**
@@ -219,7 +221,8 @@ export function formatAllahNames(text: string): string {
     const regex = new RegExp(`\\b${name}\\b`, 'gi')
     result = result.replace(regex, (match) => {
       // Capitalize first letter
-      const capitalized = match.charAt(0).toUpperCase() + match.slice(1).toLowerCase()
+      const capitalized =
+        match.charAt(0).toUpperCase() + match.slice(1).toLowerCase()
       // Use custom syntax for red color (will be handled in renderer)
       return `**{{${capitalized}}}**`
     })
@@ -251,12 +254,15 @@ export function formatProphetNames(text: string): string {
 /**
  * Full conversion pipeline
  */
-export function convertMealText(text: string, options: {
-  htmlToMarkdown?: boolean
-  normalizeCase?: boolean
-  formatAllah?: boolean
-  formatProphet?: boolean
-} = {}): string {
+export function convertMealText(
+  text: string,
+  options: {
+    htmlToMarkdown?: boolean
+    normalizeCase?: boolean
+    formatAllah?: boolean
+    formatProphet?: boolean
+  } = {},
+): string {
   if (!text) return ''
 
   let result = text
@@ -292,10 +298,15 @@ export type VerseData = {
   subtext?: string | null
 }
 
-export function convertVerse(verse: VerseData, options?: Parameters<typeof convertMealText>[1]): VerseData {
+export function convertVerse(
+  verse: VerseData,
+  options?: Parameters<typeof convertMealText>[1],
+): VerseData {
   return {
     text: convertMealText(verse.text, options),
-    subtext: verse.subtext ? convertMealText(verse.subtext, options) : verse.subtext,
+    subtext: verse.subtext
+      ? convertMealText(verse.subtext, options)
+      : verse.subtext,
   }
 }
 

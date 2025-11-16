@@ -9,7 +9,11 @@ const verseListeners = new Map<VerseKey, Set<Listener>>()
 type HoverState = {
   hoveredVerse: [number, number] | null
   setHover: (surah: number, ayah: number, value: boolean) => void
-  subscribeToVerse: (surah: number, ayah: number, callback: Listener) => () => void
+  subscribeToVerse: (
+    surah: number,
+    ayah: number,
+    callback: Listener,
+  ) => () => void
 }
 
 export const useHoverStore = create<HoverState>((set, get) => ({

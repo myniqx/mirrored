@@ -46,7 +46,12 @@ export default async function handler(
   }
 
   try {
-    const { mealId, scope, pageNumber, dryRun = false } = req.body as ConvertRequest
+    const {
+      mealId,
+      scope,
+      pageNumber,
+      dryRun = false,
+    } = req.body as ConvertRequest
 
     // Validation
     if (!mealId || !scope) {
@@ -54,7 +59,9 @@ export default async function handler(
     }
 
     if (scope === 'page' && !pageNumber) {
-      return res.status(400).json({ error: 'Page number required for page scope' })
+      return res
+        .status(400)
+        .json({ error: 'Page number required for page scope' })
     }
 
     // File path
@@ -86,7 +93,8 @@ export default async function handler(
 
     if (scope === 'page' && pageNumber) {
       // Get verses from page
-      const pageVersesRaw = (pageContents as Record<number, number[][]>)[pageNumber] || []
+      const pageVersesRaw =
+        (pageContents as Record<number, number[][]>)[pageNumber] || []
       versesToConvert = pageVersesRaw
         .filter(([, ayah]: number[]) => ayah !== 0) // Skip surah headers
         .map(([surah, ayah]: number[]) => [surah, ayah] as [number, number])
@@ -105,7 +113,12 @@ export default async function handler(
     let totalVerses = versesToConvert.length
     let convertedVerses = 0
     let skippedVerses = 0
-    const preview: Array<{ surah: number; ayah: number; before: string; after: string }> = []
+    const preview: Array<{
+      surah: number
+      ayah: number
+      before: string
+      after: string
+    }> = []
 
     // Convert verses
     for (const [surah, ayah] of versesToConvert) {
