@@ -24,7 +24,7 @@ type BookmarkDialogProps = {
 export const BookmarkDialog: React.FC<BookmarkDialogProps> = ({
   currentPage,
 }) => {
-  const { setBookmark, bookmarks } = useQuranContext()
+  const { setBookmark, bookmarks = [] } = useQuranContext()
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Check if current page is already bookmarked

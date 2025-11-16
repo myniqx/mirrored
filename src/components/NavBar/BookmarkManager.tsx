@@ -17,7 +17,7 @@ import { useRef } from 'react'
  * This provides offline-compatible bookmark sync without requiring OAuth
  */
 export const BookmarkManager = () => {
-  const { bookmarks, setBookmark } = useQuranContext()
+  const { bookmarks = [], setBookmark } = useQuranContext()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Export bookmarks as JSON file
