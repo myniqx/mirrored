@@ -10,7 +10,7 @@ type UseMeasureElementProps = {
 const useMeasureElement = <T extends HTMLElement = HTMLElement>({
   inside = false,
 }: UseMeasureElementProps = {}): [
-  React.RefObject<T>,
+  React.RefObject<T | null>,
   {
     width: number
     height: number
@@ -20,7 +20,7 @@ const useMeasureElement = <T extends HTMLElement = HTMLElement>({
     bottom: number
   },
 ] => {
-  const ref = useRef<T>(null)
+  const ref = useRef<T | null>(null)
   const [measurements, setMeasurements] = useState({
     width: 0,
     height: 0,

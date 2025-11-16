@@ -9,20 +9,96 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { getSurahDetails, useQuranContext } from '@/providers/QuranProvider'
-import { type FC, useEffect, useMemo, useState } from 'react'
+import { type FC, useEffect, useMemo, useState, useCallback, memo } from 'react'
 import type { SinglePageViewProps } from '../Arabic/types'
+import { useHoverStore } from '@/stores/hoverStore'
+import { useSelectStore } from '@/stores/selectStore'
+import { useVerseHoverState } from '@/hooks/useVerseHoverState'
+import { useVerseSelectState } from '@/hooks/useVerseSelectState'
+import { getQuranStyles } from '@/lib/quranStyles'
 
 import meals from '../../../constants/meal/meal.json'
 import pageContent from '../../../constants/quran/pageContents.json'
 import type { QuranData, Verse } from './types'
 
+// Memoized verse card component for better performance
+const MealVerseCard = memo(
+  ({
+    verse,
+    index,
+  }: {
+    verse: Verse & { surah: number; ayah: number }
+    index: number
+  }) => {
+    const setHover = useHoverStore((state) => state.setHover)
+    const toggleSelected = useSelectStore((state) => state.toggleSelected)
+    const isHovered = useVerseHoverState(verse.surah, verse.ayah)
+    const isSelected = useVerseSelectState(verse.surah, verse.ayah)
+
+    const styles = useMemo(
+      () => getQuranStyles(isHovered, isSelected),
+      [isHovered, isSelected],
+    )
+
+    const handleMouseEnter = useCallback(
+      () => setHover(verse.surah, verse.ayah, true),
+      [verse.surah, verse.ayah, setHover],
+    )
+
+    const handleMouseLeave = useCallback(
+      () => setHover(verse.surah, verse.ayah, false),
+      [verse.surah, verse.ayah, setHover],
+    )
+
+    const handleClick = useCallback(
+      () => toggleSelected(verse.surah, verse.ayah),
+      [verse.surah, verse.ayah, toggleSelected],
+    )
+
+    return (
+      <Card
+        key={index}
+        className={`mb-2 ${styles}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+      >
+        <CardHeader className="flex flex-row justify-between items-start p-4">
+          {verse.ayah === 0 ? (
+            <h2 className="text-sm font-bold">
+              {getSurahDetails(verse.surah).name}
+            </h2>
+          ) : (
+            <>
+              <h3
+                className="text-sm font-medium"
+                dangerouslySetInnerHTML={{ __html: verse?.text ?? '' }}
+              />
+              <Badge>{verse.ayah}</Badge>
+            </>
+          )}
+        </CardHeader>
+        {verse?.subtext && (
+          <CardContent className="text-muted-foreground pt-0">
+            <div
+              className="w-full"
+              dangerouslySetInnerHTML={{ __html: verse?.subtext ?? '' }}
+            />
+          </CardContent>
+        )}
+      </Card>
+    )
+  },
+)
+
+MealVerseCard.displayName = 'MealVerseCard'
+
 export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
   const content = useMemo(() => pageContent[page], [page])
-  const { setHover, getStyles, toggleSelected, mealSlug, setMealSlug } =
-    useQuranContext()
+  const { mealSlug, setMealSlug } = useQuranContext()
   const selectedMeal = useMemo(
     () => (mealSlug ? meals.find((m) => m.slug === mealSlug) : meals[0]),
-    [meals, mealSlug],
+    [mealSlug],
   )
   const [mealAyah, setMealAyah] = useState<
     (Verse & { surah: number; ayah: number })[]
@@ -67,41 +143,9 @@ export const SingleMealPage: FC<SinglePageViewProps> = ({ page }) => {
       </div>
 
       <div className="flex flex-col">
-        {mealAyah.map((verse, index) => {
-          return (
-            <Card
-              key={index}
-              className={`mb-2 ${getStyles(verse.surah, verse.ayah)}`}
-              onMouseEnter={() => setHover(verse.surah, verse.ayah, true)}
-              onMouseLeave={() => setHover(verse.surah, verse.ayah, false)}
-              onClick={() => toggleSelected(verse.surah, verse.ayah)}
-            >
-              <CardHeader className="flex flex-row justify-between items-start p-4">
-                {verse.ayah === 0 ? (
-                  <h2 className="text-sm font-bold">
-                    {getSurahDetails(verse.surah).name}
-                  </h2>
-                ) : (
-                  <>
-                    <h3
-                      className="text-sm font-medium"
-                      dangerouslySetInnerHTML={{ __html: verse?.text ?? '' }}
-                    />
-                    <Badge>{verse.ayah}</Badge>
-                  </>
-                )}
-              </CardHeader>
-              {verse?.subtext && (
-                <CardContent className="text-muted-foreground pt-0">
-                  <div
-                    className="w-full"
-                    dangerouslySetInnerHTML={{ __html: verse?.subtext ?? '' }}
-                  />
-                </CardContent>
-              )}
-            </Card>
-          )
-        })}
+        {mealAyah.map((verse, index) => (
+          <MealVerseCard key={index} verse={verse} index={index} />
+        ))}
       </div>
     </div>
   )

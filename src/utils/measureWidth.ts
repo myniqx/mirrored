@@ -45,15 +45,25 @@ export const findFontSize = ({
   return { fontSize, width }
 }
 
-const getTextP = () => {
-  const span = document.createElement('p')
-  span.style.whiteSpace = 'nowrap'
-  span.style.position = 'absolute'
-  span.style.visibility = 'hidden'
-  span.style.fontFamily = 'var(--mc-fonts-arabic)'
-  document.body.appendChild(span)
-  return span
+// Singleton DOM element for measurements (performance optimization)
+let _measureElement: HTMLParagraphElement | null = null
+
+const getMeasureElement = () => {
+  if (!_measureElement) {
+    _measureElement = document.createElement('p')
+    _measureElement.style.whiteSpace = 'nowrap'
+    _measureElement.style.position = 'absolute'
+    _measureElement.style.visibility = 'hidden'
+    _measureElement.style.top = '-9999px' // Off-screen
+    _measureElement.style.fontFamily = 'var(--mc-fonts-arabic)'
+    document.body.appendChild(_measureElement)
+  }
+  return _measureElement
 }
+
+// LRU Cache for font size calculations (performance optimization)
+const fontSizeCache = new Map<string, { fontSize: number; width: number }>()
+const MAX_CACHE_SIZE = 500 // ~15 lines * 30 pages
 
 export const getTextWidthFallback = (
   text: string,
@@ -69,12 +79,15 @@ export const findFontSize2 = ({
   text,
   maxWidth,
   font = 'font-arabic',
-  textP,
   gapCount = 0,
-}: FontSizeProps) => {
-  if (!textP) {
-    textP = getTextP()
-  }
+}: Omit<FontSizeProps, 'textP'>) => {
+  // Check cache first
+  const cacheKey = `${text}-${maxWidth}-${gapCount}`
+  const cached = fontSizeCache.get(cacheKey)
+  if (cached) return cached
+
+  // Use singleton element for measurements
+  const textP = getMeasureElement()
   const targetWidth = maxWidth - gapCount * (maxWidth * 0.01)
   const deltaLimit = Math.max(-20, -0.05 * targetWidth)
   let minFontSize = 1
@@ -105,5 +118,16 @@ export const findFontSize2 = ({
     }
   }
 
-  return { fontSize: bestFontSize, width: bestWidth }
+  const result = { fontSize: bestFontSize, width: bestWidth }
+
+  // Add to cache with LRU eviction
+  if (fontSizeCache.size >= MAX_CACHE_SIZE) {
+    const firstKey = fontSizeCache.keys().next().value
+    if (firstKey !== undefined) {
+      fontSizeCache.delete(firstKey)
+    }
+  }
+  fontSizeCache.set(cacheKey, result)
+
+  return result
 }
